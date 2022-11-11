@@ -13,12 +13,17 @@ export interface Key {
 	 * @see {@link https://en.wikipedia.org/wiki/MIDI_tuning_standard MIDI Tuning Standard},
 	 * and {@link https://www.inspiredacoustics.com/en/MIDI_note_numbers_and_center_frequencies MIDI Note Numbers and Frequencies}
 	 */
-	note: number
+	midi: number
 
 	/**
 	 * Whether the key is black or white.
 	 */
 	color: 'white' | 'black'
+
+	/**
+	 * The corresponding computer keyboard key.
+	 */
+	key: string
 }
 
 /**

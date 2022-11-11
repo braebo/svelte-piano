@@ -120,10 +120,10 @@ export class QwertyKeyboard {
 		if (typeof window !== 'undefined' && window.document) {
 			window.addEventListener('keypress', (e) => {
 				if (e.repeat) return
-				this.addKey(e)
+				this.addKey(e.code)
 			})
 			window.addEventListener('keyup', (e) => {
-				this.removeKey(e)
+				this.removeKey(e.code)
 			})
 			window.addEventListener('blur', () => {
 				this.clear()
@@ -140,12 +140,12 @@ export class QwertyKeyboard {
 	}
 
 	/** `map` returns the midi note for a given keyCode.  */
-	private map(keyCode: KeyboardEvent['code']) {
-		return this.keys[keyCode].note + this.offset()
+	private getMidiNote(keyCode: KeyboardEvent['code']) {
+		return this.keys[keyCode].midi + this.offset()
 	}
 
 	private offset() {
-		return this.state.rootNote - this.keys[this.root].note + this.state.octave * 12
+		return this.state.rootNote - this.keys[this.root].midi + this.state.octave * 12
 	}
 
 	/** `isNote` determines whether a keyCode is a note or not. */
@@ -165,31 +165,39 @@ export class QwertyKeyboard {
 	//*        Buffer
 	//*=======================
 
+	press(code: KeyboardEvent['code']) {
+		this.addKey(code)
+	}
+
+	release(code: KeyboardEvent['code']) {
+		this.removeKey(code)
+	}
+
 	/**
 	 * Creates a {@link Note} object from a keyboard event.
 	 */
-	private addKey(e: KeyboardEvent) {
+	private addKey(code: KeyboardEvent['code']) {
 		// If the keyCode is one that can be mapped and isn't
 		// Already pressed, add it to the key object.
-		if (this.isNote(e.code) && !this.isPressed(e.code)) {
-			const newKey = this.makeNote(e.code)
+		if (this.isNote(code) && !this.isPressed(code)) {
+			const newKey = this.makeNote(code)
 			// Add the newKey to the list of keys
 			this.state.keys = (this.state.keys || []).concat(newKey)
 			// Reevaluate the active notes based on our priority rules.
 			// Give it the new note to use if there is an event to trigger.
 			this.update()
-		} else if (this.isSpecialKey(e.code)) {
-			this.specialKey(e.code)
+		} else if (this.isSpecialKey(code)) {
+			this.specialKey(code)
 		}
 	}
 
-	private removeKey(e: KeyboardEvent) {
+	private removeKey(code: KeyboardEvent['code']) {
 		// If the keyCode is active, remove it from the key object.
-		if (this.isPressed(e.code)) {
+		if (this.isPressed(code)) {
 			let keyToRemove = {} as Note
 
 			for (let i = 0; i < this.state.keys.length; i++) {
-				if (this.state.keys[i].code === e.code) {
+				if (this.state.keys[i].code === code) {
 					keyToRemove = this.state.keys[i]
 					break
 				}
@@ -220,8 +228,9 @@ export class QwertyKeyboard {
 	private makeNote(keyCode: KeyboardEvent['code']): Note {
 		return {
 			code: keyCode,
-			note: this.map(keyCode),
-			frequency: this.toFrequency(this.map(keyCode)),
+			note: this.getMidiNote(keyCode),
+			name: this.keys[keyCode].name,
+			frequency: this.toFrequency(this.getMidiNote(keyCode)),
 			velocity: this.state.velocity,
 			isActive: false,
 		}

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { KeyboardOptions, State } from './types'
+	import type { Key, KeyboardOptions, State } from './types'
 
 	import { controls, defaultControls } from './controls'
 	import { QwertyKeyboard, activeKeys } from '$package'
 	import Control from '$lib/controls/Control.svelte'
-	import { fracpane } from 'fracpane'
+	import { onDestroy, onMount } from 'svelte'
+	import { Instrument } from './Instrument'
 	import { atom } from 'nanostores'
-	import { onMount } from 'svelte'
 
 	export let options: KeyboardOptions | undefined = undefined
 
@@ -21,6 +21,19 @@
 		}
 	}
 
+	let instrument: Instrument | undefined = undefined
+	let mounted = false
+	onMount(() => (mounted = true))
+	$: if ($controls.sound.value) {
+		if (mounted && !instrument?.selectedInstrument) instrument = new Instrument(keyboard)
+	}
+	$: if (!$controls.sound.value && mounted) {
+		instrument?.dispose()
+		instrument = undefined
+	}
+	onDestroy(() => instrument?.dispose())
+
+	// TODO: Move this somewhere else and do it properly.
 	const keyCodes = Object.keys(keyboard.keys).map((code) => {
 		// lol
 		return code
@@ -38,16 +51,77 @@
 			.replace('Minus', '-')
 			.replace('Equal', '=')
 	})
+
+	// TODO: Move this stuff to an action.
+	let dragging = false
+	let released = false
+	let moved = false
+	let lastCode = ''
+	const handleClick = (code: KeyboardEvent['code']) => {
+		lastCode = code
+		moved = released = false
+		dragging = true
+		keyboard.press(code)
+		window?.addEventListener(
+			'mouseup',
+			() => {
+				dragging = false
+				keyboard.release(lastCode)
+				if (released) return
+				released = true
+			},
+			{ once: true },
+		)
+		window?.addEventListener(
+			'mouseout',
+			() => {
+				if (released) return
+				keyboard.release(code)
+				if (dragging) released = true
+			},
+			{ once: true },
+		)
+	}
+
+	const handleMouseOver = (code: KeyboardEvent['code']) => {
+		lastCode = code
+		if (dragging) {
+			moved = true
+			released = false
+			keyboard.press(code)
+			window?.addEventListener(
+				'mouseout',
+				() => {
+					if (released) return
+					keyboard.release(code)
+					released = true
+				},
+				{ once: true },
+			)
+			window?.addEventListener(
+				'mouseup',
+				() => {
+					dragging = false
+					if (released) return
+					keyboard.release(code)
+					released = true
+				},
+				{ once: true },
+			)
+		}
+	}
 </script>
 
 <template lang="pug">
-
 		.keyboard(style="--theme-a: {$controls.theme.value.a}; --theme-b: {$controls.theme.value.b};")
 			div.keys.black
 				+each('Object.entries(keyboard.keys) as [code, key], i')
 					+if('key.color === "black"')
 						div.key.black(
-							class:active!='{$activeKeys.some((k) => k.note === key.note)}'
+							on:mousedown!='{() => handleClick(code)}'
+							on:mouseover!='{() => handleMouseOver(code)}'
+							on:focus!='{() => handleMouseOver(code)}'
+							class:active!='{$activeKeys.some((k) => k.name === key.name)}'
 							style:position="relative"
 						)
 							.text
@@ -63,7 +137,12 @@
 			div.keys.white
 				+each('Object.entries(keyboard.keys) as [code, key], i')
 					+if('key.color === "white"')
-						div.key.white(class:active!='{$activeKeys.some((k) => k.note === key.note)}')
+						div.key.white(
+							on:mousedown!='{() => handleClick(code)}'
+							on:mouseover!='{() => handleMouseOver(code)}'
+							on:focus!='{() => handleMouseOver(code)}'
+							class:active!='{$activeKeys.some((k) => k.name === key.name)}'
+						)
 							.text
 								+if('$controls.notes.value')
 									.name {key.name}
@@ -106,6 +185,7 @@
 		font-weight: 800;
 
 		overflow-x: hidden;
+		cursor: pointer;
 
 		&.black {
 			z-index: 2;
@@ -137,6 +217,9 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+
+			pointer-events: none;
+			user-select: none;
 
 			.code {
 				font-family: monospace;

@@ -24,11 +24,11 @@
 				'--height'='{$controls.height.value}px'
 			)
 
-
 	pre.active-keys
 		| $activeKeys:
 		+each('$activeKeys as key')
 			.debug {JSON.stringify(key, null, 2)}
+
 </template>
 
 <style lang="scss">

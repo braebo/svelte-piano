@@ -40,8 +40,6 @@
 		return ($controls[setting] as Range).range
 	}
 
-	let lock = false
-
 	const booleanControls = Object.keys($controls).filter((key) => typeof $controls[key].value === 'boolean')
 </script>
 
@@ -62,8 +60,6 @@
 							)
 
 			.bool
-				Control(label='lock')
-					Checkbox(value='{false}'  on:input!='{(e) => lock = e.detail.value}')
 				Control(label='theme')
 					ColorPickers(value!='{$controls.theme}')
 

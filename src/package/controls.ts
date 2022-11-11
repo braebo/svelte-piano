@@ -36,13 +36,20 @@ export const defaultControls: KeyboardControls = {
 		},
 		label: 'theme',
 	},
+	/** Display music note names. */
 	notes: {
 		value: false,
 		label: 'notes',
 	},
+	/** Display corresponding keyboard keys. */
 	keys: {
 		value: true,
 		label: 'keys',
+	},
+	/** Use the built-in piano sound. */
+	sound: {
+		value: true,
+		label: 'sound',
 	},
 }
 

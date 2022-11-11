@@ -10,6 +10,11 @@ export interface Note {
 	note: number
 
 	/**
+	 * The note name.
+	 */
+	name: string
+
+	/**
 	 * The frequency of the note between 0 and 20,000.
 	 */
 	frequency: number

@@ -32,4 +32,5 @@ export interface KeyboardControls {
 	theme: Theme
 	notes: Bool
 	keys: Bool
+	sound: Bool
 }
