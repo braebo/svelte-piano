@@ -1,0 +1,22 @@
+{
+	"extends": "./.svelte-kit/tsconfig.json",
+	"compilerOptions": {
+		"strict": true,
+		"sourceMap": true,
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "node",
+		"allowJs": false,
+		"checkJs": false,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"allowSyntheticDefaultImports": true,
+		"resolveJsonModule": true,
+		"noEmit": true,
+		"types": ["node"],
+		"isolatedModules": true
+	},
+	"include": ["src/**/**/**/*.ts", "src/**/*.svelte", "src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/*.d.ts"],
+	"exclude": ["mdsvex.config.js", "node_modules/*", ".vercel/*", "build/*", "dist/*"]
+}
