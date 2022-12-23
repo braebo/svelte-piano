@@ -49,15 +49,30 @@
 			.replace('Equal', '=')
 	})
 
-	// TODO: Move this stuff to an action.
+	// TODO: Touch move should function similarly to mouse move.
 	let dragging = false
 	let released = false
 	let moved = false
 	let lastCode = ''
 
 	let listeningClickUp = false
+	const clickUp = () => {
+		dragging = false
+		keyboard.release(lastCode)
+		if (released) return
+		released = true
+		listeningClickUp = false
+	}
+
 	let listeningClickOut = false
-	const handleClick = (code: KeyboardEvent['code']) => {
+	const clickOut = (code: KeyboardEvent['code']) => {
+		listeningClickOut = false
+		if (released) return
+		keyboard.release(code)
+		if (dragging) released = true
+	}
+
+	const handleClick = (e: KeyboardEvent, code: KeyboardEvent['code'], touch = false) => {
 		lastCode = code
 		moved = released = false
 		dragging = true
@@ -65,37 +80,39 @@
 
 		if (!listeningClickUp) {
 			listeningClickUp = true
-			window?.addEventListener(
-				'mouseup',
-				() => {
-					dragging = false
-					keyboard.release(lastCode)
-					if (released) return
-					released = true
-					listeningClickUp = false
-				},
-				{ once: true },
-			)
+			if (touch) {
+				e.preventDefault()
+				window?.addEventListener('touchend', clickUp, { once: true })
+			} else window?.addEventListener('mouseup', clickUp, { once: true })
 		}
 
 		if (!listeningClickOut) {
 			listeningClickOut = true
-			window?.addEventListener(
-				'mouseout',
-				() => {
-					listeningClickOut = false
-					if (released) return
-					keyboard.release(code)
-					if (dragging) released = true
-				},
-				{ once: true },
-			)
+			if (touch) {
+				e.preventDefault()
+				window?.addEventListener('touchcancel', () => clickOut(code), { once: true })
+			} else window?.addEventListener('mouseout', () => clickOut(code), { once: true })
 		}
 	}
 
 	let listeningOverOut = false
+	const overOut = (code: KeyboardEvent['code']) => {
+		listeningOverOut = false
+		if (released) return
+		keyboard.release(code)
+		released = true
+	}
+
 	let listeningOverUp = false
-	const handleMouseOver = (code: KeyboardEvent['code']) => {
+	const overUp = (code: KeyboardEvent['code']) => {
+		dragging = false
+		listeningOverUp = false
+		if (released) return
+		keyboard.release(code)
+		released = true
+	}
+
+	const handleMouseOver = (e: KeyboardEvent, code: KeyboardEvent['code'], touch = false) => {
 		lastCode = code
 		if (dragging) {
 			moved = true
@@ -104,31 +121,18 @@
 
 			if (!listeningOverOut) {
 				listeningOverOut = true
-				window?.addEventListener(
-					'mouseout',
-					() => {
-						listeningOverOut = false
-						if (released) return
-						keyboard.release(code)
-						released = true
-					},
-					{ once: true },
-				)
+				if (touch) {
+					e.preventDefault()
+					window?.addEventListener('touchcancel', () => overOut(code), { once: true })
+				} else window?.addEventListener('mouseout', () => overOut(code), { once: true })
 			}
 
 			if (!listeningOverUp) {
 				listeningOverUp = true
-				window?.addEventListener(
-					'mouseup',
-					() => {
-						dragging = false
-						listeningOverUp = false
-						if (released) return
-						keyboard.release(code)
-						released = true
-					},
-					{ once: true },
-				)
+				if (touch) {
+					e.preventDefault()
+					window?.addEventListener('touchend', () => overUp(code), { once: true })
+				} else window?.addEventListener('mouseup', () => overUp(code), { once: true })
 			}
 		}
 	}
@@ -141,9 +145,11 @@
 				+each('Object.entries(keyboard.keys) as [code, key], i')
 					+if('key.color === "black"')
 						div.key.black(
-							on:mousedown!='{() => handleClick(code)}'
-							on:mouseover!='{() => handleMouseOver(code)}'
-							on:focus!='{() => handleMouseOver(code)}'
+							on:mousedown!='{(e) => handleClick(e, code)}'
+							on:touchstart!='{(e) => handleClick(e, code, true)}'
+							on:mouseover!='{(e) => handleMouseOver(e, code)}'
+							on:touchenter!='{(e) => handleMouseOver(e, code, true)}'
+							on:focus!='{(e) => handleMouseOver(e, code)}'
 							class:active!='{$activeKeys?.some((k) => k.name === key.name)}'
 							style:position="relative"
 						)
@@ -161,9 +167,11 @@
 				+each('Object.entries(keyboard.keys) as [code, key], i')
 					+if('key.color === "white"')
 						div.key.white(
-							on:mousedown!='{() => handleClick(code)}'
-							on:mouseover!='{() => handleMouseOver(code)}'
-							on:focus!='{() => handleMouseOver(code)}'
+							on:mousedown!='{(e) => handleClick(e, code)}'
+							on:touchstart!='{(e) => handleClick(e, code, true)}'
+							on:mouseover!='{(e) => handleMouseOver(e, code)}'
+							on:touchenter!='{(e) => handleMouseOver(e, code, true)}'
+							on:focus!='{(e) => handleMouseOver(e, code)}'
 							class:active!='{$activeKeys?.some((k) => k.name === key.name)}'
 						)
 							.text
