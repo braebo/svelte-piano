@@ -6,7 +6,7 @@
 
 	.install
 		Copy
-			pre pnpm i -D fractalhq/qwerty-keyboard
+			pre pnpm i -D svelte-piano
 
 </template>
 

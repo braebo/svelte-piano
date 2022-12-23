@@ -73,7 +73,7 @@
 
 <style lang="scss">
 	.settings {
-		width: clamp(10rem, 35rem, 90vw);
+		width: clamp(10rem, 35rem, 95vw);
 		margin: 0 auto;
 		gap: 0.5rem;
 		display: flex;

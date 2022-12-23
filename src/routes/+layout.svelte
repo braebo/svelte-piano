@@ -9,7 +9,7 @@
 
 	header
 		.top
-			h1 Qwerty Keyboard
+			h1 Svelte Piano
 		
 			.theme-toggle
 				
