@@ -110,6 +110,8 @@ export class Instrument {
 	dispose() {
 		if (dev) log(`Instrument #${Instrument.count} Disposed`, 'orange')
 		this.sampler.dispose()
+		this.pingpong.dispose()
+		this.reverb.dispose()
 		this.keydown.unsubscribe()
 		this.keyup.unsubscribe()
 		this.keyboard.dispose()
