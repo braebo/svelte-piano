@@ -1,10 +1,11 @@
 {
 	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
+		"baseUrl": ".",
 		"strict": true,
 		"sourceMap": true,
-		"target": "ESNext",
-		"module": "ESNext",
+		"target": "esnext",
+		"module": "esnext",
 		"moduleResolution": "node",
 		"allowJs": false,
 		"checkJs": false,
@@ -17,6 +18,19 @@
 		"types": ["node"],
 		"isolatedModules": true
 	},
-	"include": ["src/**/**/**/*.ts", "src/**/*.svelte", "src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/*.d.ts"],
-	"exclude": ["mdsvex.config.js", "node_modules/*", ".vercel/*", "build/*", "dist/*"]
+	"include": [
+		"./src/**/**/**/*.ts",
+		"./src/**/*.svelte",
+		"./src/**/*.d.ts",
+		"./src/**/*.js",
+		"./src/**/*.ts",
+		"./src/*.d.ts",
+		"./tests/**/*.js",
+		"./tests/**/*.ts",
+		"./vite.config.js",
+		"./tests/**/*.svelte",
+		"./.svelte-kit/ambient.d.ts",
+		"./.svelte-kit/types/**/$types.d.ts"
+	],
+	"exclude": ["./.svelte-kit/[!ambient.d.ts]**", "./mdsvex.config.js", "./node_modules/*", "./.vercel/*", "./build/*", "./dist/*"]
 }
