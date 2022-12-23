@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Keyboard, activeKeys, controls, type KeyboardControls } from '$lib'
+	import { Piano, activeKeys, controls, type KeyboardControls } from '$lib'
 	import Settings from '$components/controls/Settings.svelte'
 
 	export let options: KeyboardControls | undefined = undefined
 
-	let keyboard: Keyboard
+	let keyboard: Piano
 
 	if (options) {
 		$controls = Object.assign($controls, options)
@@ -16,7 +16,7 @@
 	Settings(on:update='{keyboard.update}')
 
 	.keyboard
-		Keyboard(
+		Piano(
 			{options}
 			bind:this='{keyboard}'
 			'--width'='{$controls.width.value}px'

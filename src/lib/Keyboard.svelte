@@ -80,18 +80,14 @@
 
 		if (!listeningClickUp) {
 			listeningClickUp = true
-			if (touch) {
-				e.preventDefault()
-				window?.addEventListener('touchend', clickUp, { once: true })
-			} else window?.addEventListener('mouseup', clickUp, { once: true })
+			e.preventDefault()
+			window?.addEventListener('pointerup', clickUp, { once: true })
 		}
 
 		if (!listeningClickOut) {
 			listeningClickOut = true
-			if (touch) {
-				e.preventDefault()
-				window?.addEventListener('touchcancel', () => clickOut(code), { once: true })
-			} else window?.addEventListener('mouseout', () => clickOut(code), { once: true })
+			e.preventDefault()
+			window?.addEventListener('pointerout', () => clickOut(code), { once: true })
 		}
 	}
 
@@ -112,7 +108,7 @@
 		released = true
 	}
 
-	const handleMouseOver = (e: KeyboardEvent, code: KeyboardEvent['code'], touch = false) => {
+	const handleMouseOver = (e: KeyboardEvent | TouchEvent, code: KeyboardEvent['code'], touch = false) => {
 		lastCode = code
 		if (dragging) {
 			moved = true
@@ -121,37 +117,79 @@
 
 			if (!listeningOverOut) {
 				listeningOverOut = true
-				if (touch) {
-					e.preventDefault()
-					window?.addEventListener('touchcancel', () => overOut(code), { once: true })
-				} else window?.addEventListener('mouseout', () => overOut(code), { once: true })
+				e.preventDefault()
+				window?.addEventListener('pointerout', () => overOut(code), { once: true })
 			}
 
 			if (!listeningOverUp) {
 				listeningOverUp = true
-				if (touch) {
-					e.preventDefault()
-					window?.addEventListener('touchend', () => overUp(code), { once: true })
-				} else window?.addEventListener('mouseup', () => overUp(code), { once: true })
+				e.preventDefault()
+				window?.addEventListener('pointerup', () => overUp(code), { once: true })
 			}
+		}
+	}
+
+	const touches = new Map<number, KeyboardEvent['code']>()
+	const handleTouchMove = (e: TouchEvent) => {
+		if (dragging) {
+			const touch = e.touches[0]
+			const element = document.elementFromPoint(touch.clientX, touch.clientY)
+			if (!element) return
+
+			const code = (element as HTMLElement).dataset.code
+			if (!code) return
+
+			if (touches.has(touch.identifier)) {
+				const lastCode = touches.get(touch.identifier)
+				if (lastCode !== code) {
+					keyboard.release(lastCode as KeyboardEvent['code'])
+					touches.set(touch.identifier, code)
+					keyboard.press(code as KeyboardEvent['code'])
+				}
+			} else {
+				touches.set(touch.identifier, code)
+				keyboard.press(code as KeyboardEvent['code'])
+			}
+		}
+	}
+	const handleTouchEnd = (e: TouchEvent) => {
+		const touch = e.changedTouches[0]
+
+		const element = document.elementFromPoint(touch.clientX, touch.clientY)
+		if (!element) return
+
+		const code = (element as HTMLElement).dataset.code
+		if (!code) return
+
+		touches.delete(touch.identifier)
+		keyboard.release(code)
+
+		if (touches.size === 0) {
+			console.log('resetting')
+			dragging = false
+			released = true
 		}
 	}
 </script>
 
 <template lang="pug">
+		svelte:window(on:touchmove!='{(e) => handleTouchMove(e)}')
 
 		.keyboard(style="--theme-a: {$controls.theme.value.a}; --theme-b: {$controls.theme.value.b};")
 			div.keys.black
 				+each('Object.entries(keyboard.keys) as [code, key], i')
 					+if('key.color === "black"')
+						//- on:touchstart|preventDefault prevents the screen from scrolling when you touch the keyboard.
 						div.key.black(
-							on:mousedown!='{(e) => handleClick(e, code)}'
-							on:touchstart!='{(e) => handleClick(e, code, true)}'
-							on:mouseover!='{(e) => handleMouseOver(e, code)}'
-							on:touchenter!='{(e) => handleMouseOver(e, code, true)}'
+							on:touchstart|preventDefault
+							on:touchend!='{(e) => handleTouchEnd(e)}'
+							on:touchcancel!='{(e) => handleTouchEnd(e)}'
+							on:pointerdown!='{(e) => handleClick(e, code)}'
+							on:pointerover!='{(e) => handleMouseOver(e, code)}'
 							on:focus!='{(e) => handleMouseOver(e, code)}'
 							class:active!='{$activeKeys?.some((k) => k.name === key.name)}'
-							style:position="relative"
+							style:position='relative'
+							data-code='{code}'
 						)
 							.text
 								+if('$controls.notes.value')
@@ -167,12 +205,14 @@
 				+each('Object.entries(keyboard.keys) as [code, key], i')
 					+if('key.color === "white"')
 						div.key.white(
-							on:mousedown!='{(e) => handleClick(e, code)}'
-							on:touchstart!='{(e) => handleClick(e, code, true)}'
-							on:mouseover!='{(e) => handleMouseOver(e, code)}'
-							on:touchenter!='{(e) => handleMouseOver(e, code, true)}'
+							on:touchstart|preventDefault
+							on:touchend!='{(e) => handleTouchEnd(e)}'
+							on:touchcancel!='{(e) => handleTouchEnd(e)}'
+							on:pointerdown!='{(e) => handleClick(e, code)}'
+							on:pointerover!='{(e) => handleMouseOver(e, code)}'
 							on:focus!='{(e) => handleMouseOver(e, code)}'
 							class:active!='{$activeKeys?.some((k) => k.name === key.name)}'
+							data-code='{code}'
 						)
 							.text
 								+if('$controls.notes.value')
