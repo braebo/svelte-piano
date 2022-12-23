@@ -37,7 +37,7 @@
 		"@sveltejs/kit": "1.0.1",
 		"@sveltejs/package": "1.0.1",
 		"@svitejs/changesets-changelog-github-compact": "1.0.0",
-		"@tonejs/piano": "^0.2.1",
+		"@tsconfig/svelte": "^3.0.0",
 		"@tweakpane/core": "^1.1.1",
 		"@tweakpane/plugin-essentials": "^0.1.5",
 		"@types/node": "18.11.17",
