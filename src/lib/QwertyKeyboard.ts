@@ -64,12 +64,12 @@ export class QwertyKeyboard {
 	/**
 	 * An observable that emits the current {@link Note} being pressed.
 	 */
-	onKeyDown = onKeyDown
+	onKeyDown? = onKeyDown
 
 	/**
 	 * An observable that emits the current {@link Note} being released.
 	 */
-	onKeyUp = onKeyUp
+	onKeyUp? = onKeyUp
 
 	/** Internal rxjs keyDown Subject */
 	private keyDown = keyDown
@@ -88,7 +88,7 @@ export class QwertyKeyboard {
 
 		this.specialKeyMap = settings.specialKeymap ?? specialKeyMap
 
-		this.init()
+		if (settings.eventListeners) this.addListeners()
 	}
 
 	//*=======================
@@ -109,6 +109,7 @@ export class QwertyKeyboard {
 			buffer: [],
 			width: 800,
 			height: 200,
+			eventListeners: true,
 		}
 	}
 
@@ -116,19 +117,45 @@ export class QwertyKeyboard {
 	 *	DOM Bindings
 	 */
 
-	private init() {
+	protected keypressActive = false
+	keypress(e: KeyboardEvent) {
+		if (e.repeat) return
+		this.addKey(e.code)
+	}
+	protected keyupActive = false
+	keyup(e: KeyboardEvent) {
+		this.removeKey(e.code)
+	}
+	protected blurActive = false
+	blur() {
+		this.clear()
+	}
+
+	protected addListeners() {
 		if (typeof window !== 'undefined' && window.document) {
-			window.addEventListener('keypress', (e) => {
-				if (e.repeat) return
-				this.addKey(e.code)
-			})
-			window.addEventListener('keyup', (e) => {
-				this.removeKey(e.code)
-			})
-			window.addEventListener('blur', () => {
-				this.clear()
-			})
+			if (!this.keypressActive) {
+				window.addEventListener('keypress', this.keypress.bind(this))
+				this.keypressActive = true
+			}
+			if (!this.keyupActive) {
+				window.addEventListener('keyup', this.keyup.bind(this))
+				this.keyupActive = true
+			}
+			if (!this.blurActive) {
+				window.addEventListener('blur', this.blur.bind(this))
+				this.blurActive = true
+			}
 		}
+	}
+
+	dispose() {
+		if (typeof window !== 'undefined' && window.document) {
+			window.removeEventListener('keypress', this.keypress.bind(this))
+			window.removeEventListener('keyup', this.keyup.bind(this))
+			window.removeEventListener('blur', this.blur.bind(this))
+		}
+		this.onKeyDown = undefined
+		this.onKeyUp = undefined
 	}
 
 	//*=======================

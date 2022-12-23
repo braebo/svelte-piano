@@ -78,6 +78,12 @@ export interface KeyboardOptions {
 	 * @default 200
 	 */
 	height: number
+
+	/**
+	 * Whether or not event listeners should be added to the windows keyboard events automatically.
+	 * @default true
+	 **/
+	eventListeners: boolean
 }
 
 export interface State extends KeyboardOptions {

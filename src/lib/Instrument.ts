@@ -77,8 +77,8 @@ export class Instrument {
 		},
 	})
 
-	keydown: Subscription
-	keyup: Subscription
+	keydown!: Subscription
+	keyup!: Subscription
 
 	pingpong = new PingPongDelay({
 		wet: 0.1,
@@ -96,13 +96,15 @@ export class Instrument {
 		Instrument.count++
 		if (dev) log(`Instrument #${Instrument.count} Created`, 'lightgreen')
 
-		this.keydown = this.keyboard.onKeyDown.subscribe((note) => {
-			this.sampler.triggerAttack([note.name], '+0.01', note.velocity / 127)
-		})
+		if (this.keyboard.onKeyDown)
+			this.keydown = this.keyboard.onKeyDown.subscribe((note) => {
+				this.sampler.triggerAttack([note.name], '+0.01', note.velocity / 127)
+			})
 
-		this.keyup = this.keyboard.onKeyUp.subscribe((note) => {
-			this.sampler.triggerRelease([note.name])
-		})
+		if (this.keyboard.onKeyUp)
+			this.keyup = this.keyboard.onKeyUp.subscribe((note) => {
+				this.sampler.triggerRelease([note.name])
+			})
 	}
 
 	dispose() {
@@ -110,6 +112,7 @@ export class Instrument {
 		this.sampler.dispose()
 		this.keydown.unsubscribe()
 		this.keyup.unsubscribe()
+		this.keyboard.dispose()
 		Instrument.count--
 	}
 }

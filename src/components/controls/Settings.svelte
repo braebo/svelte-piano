@@ -9,8 +9,10 @@
 	import Checkbox from './Checkbox.svelte'
 	import Slider from './Slider.svelte'
 
-	const keyboardParams = Object.keys(new QwertyKeyboard())
-	const stateParams = Object.keys(new QwertyKeyboard().state)
+	const dummy = new QwertyKeyboard({ eventListeners: false })
+	const keyboardParams = Object.keys(dummy)
+	const stateParams = Object.keys(dummy.state)
+	dummy.dispose()
 
 	const dispatch = createEventDispatcher()
 
