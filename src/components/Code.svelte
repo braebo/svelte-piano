@@ -32,7 +32,7 @@
 	let code = ''
 
 	$: if ($controls) {
-		code = `<span class="element">&lt;Keyboard</span>${
+		code = `<span class="element">&lt;Piano</span>${
 			options.length
 				? `\n\t<span class="options">options</span><span class="curlyboi">=\{</span>${options}${
 						options.length ? '\n\t' : ''
@@ -42,7 +42,14 @@
 	}
 </script>
 
-<pre use:draggable><span><Copy>{@html code}</Copy></span></pre>
+<pre use:draggable><span
+		><Copy
+			><span class="operator">{'<script>\n\t'}</span><span style:color="var(--brand-a)">import</span> <span class="curlyboi">&lcub;</span
+			> <span class="element">Piano</span> <span class="curlyboi">&rcub;</span> <span class="operator">from</span> <span class="string"
+				>'svelte-piano'</span
+			><span class="operator">{'\n<' + 'script>\n\n'}</span>{@html code}</Copy
+		></span
+	></pre>
 
 <style lang="scss">
 	pre {
@@ -78,6 +85,12 @@
 				background-color: transparent;
 				background: transparent;
 			}
+		}
+	}
+
+	@media only screen and (max-width: 1000px) {
+		span {
+			font-size: var(--font-xxs);
 		}
 	}
 
