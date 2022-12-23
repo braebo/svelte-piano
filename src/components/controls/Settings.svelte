@@ -3,11 +3,12 @@
 
 	import ColorPickers from '$components/controls/ColorPickers.svelte'
 	import Control from '$components/controls/Control.svelte'
-	import Keyboard from '$lib/Keyboard.svelte'
 	import { createEventDispatcher } from 'svelte'
+	import Keyboard from '$lib/Keyboard.svelte'
 	import { controls } from '$lib/controls'
 	import Checkbox from './Checkbox.svelte'
 	import Slider from './Slider.svelte'
+	import { OnMount } from 'fractils'
 
 	const dummy = new QwertyKeyboard({ eventListeners: false })
 	const keyboardParams = Object.keys(dummy)
@@ -49,35 +50,37 @@
 
 	.settings
 		+if('$controls')
+			OnMount
+				.range
+					+each('Object.keys($controls) as setting, i')
+						+if('typeof $controls[setting].value === "number"')
+							Control(label='{setting}' i='{i}')
+								Slider(
+									on:input!='{(e) => handleRange(e, setting)}'
+									bind:value='{$controls[setting].value}'
+									range='{getRange(setting)}'
+									name='{$controls[setting].label}'
+								)
 
-			.range
-				+each('Object.keys($controls) as setting, i')
-					+if('typeof $controls[setting].value === "number"')
-						Control(label='{setting}' i='{i}')
-							Slider(
-								on:input!='{(e) => handleRange(e, setting)}'
-								bind:value='{$controls[setting].value}'
-								range='{getRange(setting)}'
-								name='{$controls[setting].label}'
-							)
+				.bool
+					Control(label='theme')
+						ColorPickers(value!='{$controls.theme}')
 
-			.bool
-				Control(label='theme')
-					ColorPickers(value!='{$controls.theme}')
-
-				+each('booleanControls as setting, i')
-					Control(label='{$controls[setting].label}' i='{i}')
-						Checkbox(value!='{!!$controls[setting].value}' on:input!='{(e) => handleBool(e, setting)}')
+					+each('booleanControls as setting, i')
+						Control(label='{$controls[setting].label}' i='{i}')
+							Checkbox(value!='{!!$controls[setting].value}' on:input!='{(e) => handleBool(e, setting)}')
 
 </template>
 
 <style lang="scss">
 	.settings {
-		width: clamp(10rem, 35rem, 95vw);
-		margin: 0 auto;
-		gap: 0.5rem;
 		display: flex;
 		flex-direction: row;
+		gap: 0.5rem;
+
+		min-height: 10rem;
+		width: clamp(10rem, 35rem, 95vw);
+		margin: 0 auto;
 	}
 	.range {
 		display: flex;

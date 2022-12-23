@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte'
 	import { Check, X } from 'lucide-svelte'
+	import { mobile } from 'fractils'
 
 	const dispatch = createEventDispatcher()
 
 	export let value: boolean
+	const size = 20
 
 	const handleClick = (state: boolean) => {
 		value = state
@@ -16,10 +18,10 @@
 	<div class="inputs">
 		<div class="checkbox">
 			<button class="unchecked" on:click={() => handleClick(false)} class:active={!value}>
-				<X color="currentColor" strokeWidth={1} />
+				<X color="currentColor" strokeWidth={1} {size} />
 			</button>
 			<button class="checked" on:click={() => handleClick(true)} class:active={value}>
-				<Check color="currentColor" strokeWidth={1} />
+				<Check color="currentColor" strokeWidth={1} {size} />
 			</button>
 		</div>
 	</div>

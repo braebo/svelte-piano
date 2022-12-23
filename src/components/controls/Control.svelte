@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition'
+	import { mobile } from 'fractils'
 
 	export let label = ''
 	export let i = 1
@@ -7,7 +8,7 @@
 
 <div class="control" in:fly={{ y: 10, duration: 300, delay: 100 + 33 * i }} out:fly={{ y: 10, duration: 100 }}>
 	{#if label}<label for={label}>{label}</label>{/if}
-	<div class="range" class:fullWidth={label}>
+	<div class="range" class:fullWidth={label} class:mobile={$mobile}>
 		<slot />
 	</div>
 </div>
@@ -61,6 +62,9 @@
 		padding: 18px 0;
 	}
 	.range.fullWidth {
-		width: 85%;
+		width: 80%;
+	}
+	.range.mobile {
+		width: 60%;
 	}
 </style>

@@ -231,7 +231,8 @@
 		flex-direction: column;
 		position: relative;
 
-		width: clamp(400px, var(--width), 90vw);
+		width: var(--width);
+		max-width: 95vw;
 		height: var(--height);
 	}
 

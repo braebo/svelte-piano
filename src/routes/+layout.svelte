@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { ThemeToggle } from 'fractils'
+	import { Fractils, ThemeToggle } from 'fractils'
 	import Nav from '$components/Nav.svelte'
 	import 'greset/greset.css'
 	import '../styles/app.scss'
 </script>
 
 <template lang="pug">
+
+	Fractils
 
 	header
 		.top
