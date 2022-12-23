@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { QwertyKeyboard, type KeyboardControls, type Range } from '$package'
+	import { QwertyKeyboard, type KeyboardControls, type Range } from '$lib'
 
-	import ColorPickers from '$lib/controls/ColorPickers.svelte'
-	import Control from '$lib/controls/Control.svelte'
-	import Keyboard from '$package/Keyboard.svelte'
+	import ColorPickers from '$components/controls/ColorPickers.svelte'
+	import Control from '$components/controls/Control.svelte'
+	import Keyboard from '$lib/Keyboard.svelte'
 	import { createEventDispatcher } from 'svelte'
-	import { controls } from '$package/controls'
+	import { controls } from '$lib/controls'
 	import Checkbox from './Checkbox.svelte'
 	import Slider from './Slider.svelte'
 

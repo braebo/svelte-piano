@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { defaultControls } from '$package/controls'
+	import { defaultControls } from '$lib/controls'
 	import { draggable } from '@neodrag/svelte'
-	import { controls } from '$package'
+	import { controls } from '$lib'
 	import Copy from './Copy.svelte'
 
 	const defaults = JSON.parse(JSON.stringify(defaultControls))

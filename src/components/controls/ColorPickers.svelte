@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { controls } from '$package'
+	import { controls } from '$lib'
 </script>
 
 <div class="control">

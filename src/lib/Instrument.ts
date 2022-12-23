@@ -1,8 +1,9 @@
 import type { QwertyKeyboard } from './QwertyKeyboard'
 import type { Subscription } from 'rxjs'
+
+import { Sampler, PingPongDelay, Reverb } from 'tone'
 import { dev } from '$app/environment'
 import { log } from 'fractils'
-import * as T from 'tone'
 
 const salamander = {
 	urls: {
@@ -66,7 +67,7 @@ export class Instrument {
 
 	selectedInstrument: keyof typeof instruments = 'electric'
 
-	sampler = new T.Sampler({
+	sampler = new Sampler({
 		...Object.fromEntries(Object.entries(instruments[this.selectedInstrument])),
 		onload: () => {
 			this.sampler.volume.value = -6
@@ -79,13 +80,13 @@ export class Instrument {
 	keydown: Subscription
 	keyup: Subscription
 
-	pingpong = new T.PingPongDelay({
+	pingpong = new PingPongDelay({
 		wet: 0.1,
 		delayTime: 0.25,
 		feedback: 0.5,
 	})
 
-	reverb = new T.Reverb({
+	reverb = new Reverb({
 		wet: 0.3,
 		decay: 10,
 		preDelay: 0.01,
@@ -93,10 +94,9 @@ export class Instrument {
 
 	constructor(public keyboard: QwertyKeyboard) {
 		Instrument.count++
-		if (dev) log(Instrument.count + ' Instrument Created')
+		if (dev) log(`Instrument #${Instrument.count} Created`, 'lightgreen')
 
 		this.keydown = this.keyboard.onKeyDown.subscribe((note) => {
-			// this.sampler.triggerAttack([note.name], '+0.01', note.velocity / 127)
 			this.sampler.triggerAttack([note.name], '+0.01', note.velocity / 127)
 		})
 
@@ -106,6 +106,7 @@ export class Instrument {
 	}
 
 	dispose() {
+		if (dev) log(`Instrument #${Instrument.count} Disposed`, 'orange')
 		this.sampler.dispose()
 		this.keydown.unsubscribe()
 		this.keyup.unsubscribe()

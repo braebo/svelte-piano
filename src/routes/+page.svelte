@@ -1,7 +1,7 @@
 <script lang="ts">
-	import KeyboardEditor from '$lib/KeyboardEditor.svelte'
-	import Install from '$lib/Install.svelte'
-	import Code from '$lib/Code.svelte'
+	import KeyboardEditor from '$components/KeyboardEditor.svelte'
+	import Install from '$components/Install.svelte'
+	import Code from '$components/Code.svelte'
 </script>
 
 <template lang="pug">

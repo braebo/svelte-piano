@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Key, KeyboardOptions, State } from './types'
+	import type { KeyboardOptions } from './types'
 
+	import Control from '$components/controls/Control.svelte'
 	import { controls, defaultControls } from './controls'
-	import { QwertyKeyboard, activeKeys } from '$package'
-	import Control from '$lib/controls/Control.svelte'
+	import { QwertyKeyboard, activeKeys } from '$lib'
 	import { onDestroy, onMount } from 'svelte'
 	import { Instrument } from './Instrument'
 	import { atom } from 'nanostores'
@@ -23,14 +23,21 @@
 
 	let instrument: Instrument | undefined = undefined
 	let mounted = false
-	onMount(() => (mounted = true))
-	$: if ($controls.sound.value) {
-		if (mounted && !instrument?.selectedInstrument) instrument = new Instrument(keyboard)
-	}
+	onMount(() => {
+		mounted = true
+		instrument = new Instrument(keyboard)
+	})
+
+	// $: if ($controls.sound.value) {
+	// 	if (mounted && !instrument?.selectedInstrument) instrument = new Instrument(keyboard)
+	// }
+
 	$: if (!$controls.sound.value && mounted) {
-		instrument?.dispose()
-		instrument = undefined
+		console.log('dispose')
+		// instrument?.dispose()
+		// instrument = undefined
 	}
+
 	onDestroy(() => instrument?.dispose())
 
 	// TODO: Move this somewhere else and do it properly.
@@ -113,6 +120,7 @@
 </script>
 
 <template lang="pug">
+
 		.keyboard(style="--theme-a: {$controls.theme.value.a}; --theme-b: {$controls.theme.value.b};")
 			div.keys.black
 				+each('Object.entries(keyboard.keys) as [code, key], i')

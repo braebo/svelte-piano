@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { ThemeToggle } from 'fractils'
-	import Nav from '$lib/Nav.svelte'
+	import Nav from '$components/Nav.svelte'
 	import 'greset/greset.css'
 	import '../styles/app.scss'
 </script>

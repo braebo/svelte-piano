@@ -16,17 +16,14 @@ const config = {
 
 	kit: {
 		adapter: adapter(),
-		prerender: {
-			enabled: false, // SSR only for security
-		},
 		alias: {
-			$package: 'src/package',
+			$components: 'src/components',
 		},
 	},
 
 	package: {
-		source: 'src/package', // Library directory
-		dir: 'dist', // Output directory
+		// source: 'src/package', // Library directory
+		// dir: 'dist', // Output directory
 		exports: (file) => file === 'index.ts', // Only export index.ts
 	},
 

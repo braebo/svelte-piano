@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Keyboard, activeKeys, controls, type KeyboardControls } from '$package'
-	import Settings from '$lib/controls/Settings.svelte'
+	import { Keyboard, activeKeys, controls, type KeyboardControls } from '$lib'
+	import Settings from '$components/controls/Settings.svelte'
 
 	export let options: KeyboardControls | undefined = undefined
 
