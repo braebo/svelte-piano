@@ -10,8 +10,6 @@
 
 	let slotEl: HTMLElement
 
-	// TODO: Animate the copy svg such that the squares merge into
-	// a checkbox and a checkmark animates in.
 	let copied = false
 	let timeout: NodeJS.Timeout
 	const handleCopy = () => {
@@ -128,16 +126,16 @@
 
 			z-index: 3;
 
-			width: fit-content;
-			height: fit-content;
+			// width: fit-content;
+			// height: fit-content;
 			width: 100%;
 			height: 100%;
 			padding: 1rem;
 			margin: auto;
 
 			background: rgba(var(--light-a-rgb), 0.95);
-			color: var(--dark-d);
 			color: lightgreen;
+			text-shadow: 0 0 1rem hsla(120, 73%, 75%, 0.5);
 			border-radius: var(--radius);
 
 			font-size: var(--font-xs);
