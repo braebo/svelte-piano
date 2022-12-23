@@ -25,7 +25,7 @@
 	let mounted = false
 	onMount(() => {
 		mounted = true
-		instrument = new Instrument(keyboard)
+		if (typeof instrument === 'undefined') instrument = new Instrument(keyboard)
 	})
 
 	// $: if ($controls.sound.value) {
@@ -129,7 +129,7 @@
 							on:mousedown!='{() => handleClick(code)}'
 							on:mouseover!='{() => handleMouseOver(code)}'
 							on:focus!='{() => handleMouseOver(code)}'
-							class:active!='{$activeKeys.some((k) => k.name === key.name)}'
+							class:active!='{$activeKeys?.some((k) => k.name === key.name)}'
 							style:position="relative"
 						)
 							.text
@@ -149,7 +149,7 @@
 							on:mousedown!='{() => handleClick(code)}'
 							on:mouseover!='{() => handleMouseOver(code)}'
 							on:focus!='{() => handleMouseOver(code)}'
-							class:active!='{$activeKeys.some((k) => k.name === key.name)}'
+							class:active!='{$activeKeys?.some((k) => k.name === key.name)}'
 						)
 							.text
 								+if('$controls.notes.value')

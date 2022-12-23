@@ -122,12 +122,11 @@
 
 {#if value}
 	<div
-		{name}
-		class="range"
 		role="slider"
 		bind:this={el}
 		class:vertical
 		draggable="false"
+		class="range {name}"
 		aria-valuenow={value}
 		on:mousedown={setFromMouse}
 		style:--thumb-width="{thumbWidth}px"
@@ -177,10 +176,8 @@
 		width: var(--thumb-width);
 		height: var(--thumb-height, 100%);
 
-		// border: 1px solid var(--dark-d);
 		border-radius: 5px;
 		background-image: linear-gradient(to right, var(--light-c) 0%, var(--brand-a) 50%, var(--light-c) 100%);
-		// background: var(--dark-d);
 
 		cursor: grab;
 		transition: background 0.3s;

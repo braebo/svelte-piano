@@ -16,13 +16,12 @@
 	Settings(on:update='{keyboard.update}')
 
 	.keyboard
-		+key('$controls')
-			Keyboard(
-				{options}
-				bind:this='{keyboard}'
-				'--width'='{$controls.width.value}px'
-				'--height'='{$controls.height.value}px'
-			)
+		Keyboard(
+			{options}
+			bind:this='{keyboard}'
+			'--width'='{$controls.width.value}px'
+			'--height'='{$controls.height.value}px'
+		)
 
 	pre.active-keys
 		| $activeKeys:
