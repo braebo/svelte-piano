@@ -16,7 +16,7 @@ export const defaultControls: KeyboardControls = {
 		label: 'height',
 		range: {
 			min: 100,
-			max: 1000,
+			max: 500,
 			step: 1,
 		},
 	},

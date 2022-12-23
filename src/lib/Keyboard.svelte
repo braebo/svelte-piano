@@ -28,16 +28,6 @@
 		if (typeof instrument === 'undefined') instrument = new Instrument(keyboard)
 	})
 
-	// $: if ($controls.sound.value) {
-	// 	if (mounted && !instrument?.selectedInstrument) instrument = new Instrument(keyboard)
-	// }
-
-	$: if (!$controls.sound.value && mounted) {
-		console.log('dispose')
-		// instrument?.dispose()
-		// instrument = undefined
-	}
-
 	onDestroy(() => instrument?.dispose())
 
 	// TODO: Move this somewhere else and do it properly.
@@ -64,57 +54,82 @@
 	let released = false
 	let moved = false
 	let lastCode = ''
+
+	let listeningClickUp = false
+	let listeningClickOut = false
 	const handleClick = (code: KeyboardEvent['code']) => {
 		lastCode = code
 		moved = released = false
 		dragging = true
 		keyboard.press(code)
-		window?.addEventListener(
-			'mouseup',
-			() => {
-				dragging = false
-				keyboard.release(lastCode)
-				if (released) return
-				released = true
-			},
-			{ once: true },
-		)
-		window?.addEventListener(
-			'mouseout',
-			() => {
-				if (released) return
-				keyboard.release(code)
-				if (dragging) released = true
-			},
-			{ once: true },
-		)
+
+		if (!listeningClickUp) {
+			listeningClickUp = true
+			window?.addEventListener(
+				'mouseup',
+				() => {
+					dragging = false
+					keyboard.release(lastCode)
+					if (released) return
+					released = true
+					listeningClickUp = false
+				},
+				{ once: true },
+			)
+		}
+
+		if (!listeningClickOut) {
+			listeningClickOut = true
+			window?.addEventListener(
+				'mouseout',
+				() => {
+					listeningClickOut = false
+					if (released) return
+					keyboard.release(code)
+					if (dragging) released = true
+				},
+				{ once: true },
+			)
+		}
 	}
 
+	let listeningOverOut = false
+	let listeningOverUp = false
 	const handleMouseOver = (code: KeyboardEvent['code']) => {
 		lastCode = code
 		if (dragging) {
 			moved = true
 			released = false
 			keyboard.press(code)
-			window?.addEventListener(
-				'mouseout',
-				() => {
-					if (released) return
-					keyboard.release(code)
-					released = true
-				},
-				{ once: true },
-			)
-			window?.addEventListener(
-				'mouseup',
-				() => {
-					dragging = false
-					if (released) return
-					keyboard.release(code)
-					released = true
-				},
-				{ once: true },
-			)
+
+			if (!listeningOverOut) {
+				listeningOverOut = true
+				window?.addEventListener(
+					'mouseout',
+					() => {
+						listeningOverOut = false
+						if (released) return
+						keyboard.release(code)
+						released = true
+					},
+					{ once: true },
+				)
+			}
+
+			if (!listeningOverUp) {
+				listeningOverUp = true
+				window?.addEventListener(
+					'mouseup',
+					() => {
+						dragging = false
+						listeningOverUp = false
+						if (released) return
+						keyboard.release(code)
+						released = true
+					},
+					{ once: true },
+				)
+			}
 		}
 	}
 </script>
