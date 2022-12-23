@@ -43,7 +43,7 @@
 			slot
 
 		.copy-icon
-			Copy
+			Copy(size='{15}')
 
 		+if('copied')
 			.copied(transition:fly='{{ y: -5, duration: 400, easing: quintOut }}')
@@ -56,18 +56,23 @@
 		position: relative;
 		overflow: visible;
 
+		display: flex;
+		align-items: center;
+
 		width: max-content;
+		width: 100%;
+		height: 100%;
 		padding: 0.25rem 0.5rem;
 
 		background: var(--light-a);
 		border-radius: var(--radius);
 		backdrop-filter: blur(10px);
-		// box-shadow: var(--shadow-lg);
 		outline: 1px solid transparent;
 
 		transition: 0.15s;
 		cursor: pointer;
 
+		overflow: hidden;
 		pointer-events: all;
 		* {
 			pointer-events: none;
@@ -82,7 +87,7 @@
 			inset: 0;
 
 			width: fit-content;
-			height: 1.4rem;
+			height: 1rem;
 			margin: auto;
 
 			color: var(--dark-a);
@@ -116,20 +121,27 @@
 		}
 
 		.copied {
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			position: absolute;
 			inset: 0;
-			bottom: -5.5rem;
 
 			z-index: 3;
 
 			width: fit-content;
 			height: fit-content;
+			width: 100%;
+			height: 100%;
+			padding: 1rem;
 			margin: auto;
 
+			background: rgba(var(--light-a-rgb), 0.95);
 			color: var(--dark-d);
+			color: lightgreen;
 			border-radius: var(--radius);
 
-			font-size: var(--font-xxs);
+			font-size: var(--font-xs);
 		}
 	}
 </style>
