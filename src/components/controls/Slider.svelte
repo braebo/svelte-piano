@@ -61,7 +61,7 @@
 	const mouseUp = () => {
 		dragging = false
 
-		window?.addEventListener('mousemove', mouseMove)
+		window?.addEventListener('pointermove', mouseMove)
 
 		el.style.cursor = 'pointer'
 		track.style.cursor = 'pointer'
@@ -71,8 +71,8 @@
 	const mouseDown = () => {
 		dragging = true
 
-		window?.addEventListener('mouseup', mouseUp, { once: true })
-		window?.addEventListener('mousemove', mouseMove)
+		window?.addEventListener('pointerup', mouseUp, { once: true })
+		window?.addEventListener('pointermove', mouseMove)
 
 		el.style.cursor = 'grabbing'
 		if (el.parentElement) el.parentElement.style.cursor = 'grabbing'
@@ -115,8 +115,8 @@
 
 	onDestroy(() => {
 		if (typeof window === 'undefined') return
-		window?.removeEventListener('mousemove', mouseMove)
-		window?.removeEventListener('mouseup', mouseUp)
+		window?.removeEventListener('pointermove', mouseMove)
+		window?.removeEventListener('pointerup', mouseUp)
 	})
 </script>
 
@@ -128,10 +128,10 @@
 		draggable="false"
 		class="range {name}"
 		aria-valuenow={value}
-		on:mousedown={setFromMouse}
+		on:pointerdown={setFromMouse}
 		style:--thumb-width="{thumbWidth}px"
 	>
-		<div class="thumb" bind:this={thumb} on:mousedown|stopPropagation|capture={mouseDown} style:left="{progress}px" draggable="false" />
+		<div class="thumb" bind:this={thumb} on:pointerdown|stopPropagation|capture={mouseDown} style:left="{progress}px" draggable="false" />
 		<div class="track" bind:this={track} style:clip-path="0 {progress} 0 0" draggable="false" />
 	</div>
 {/if}
