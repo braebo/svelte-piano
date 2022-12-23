@@ -27,7 +27,6 @@
 			const innerText = slotEl!?.innerText
 			if (innerText) {
 				copyText = innerText
-				console.log({ copyText })
 			}
 		}
 	})
