@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { Piano, activeKeys, controls, type KeyboardControls } from '$lib'
 	import Settings from '$components/controls/Settings.svelte'
+	import { mobile } from 'fractils'
+	import { onMount } from 'svelte'
 
 	export let options: KeyboardControls | undefined = undefined
 
@@ -9,6 +11,12 @@
 	if (options) {
 		$controls = Object.assign($controls, options)
 	}
+
+	onMount(() => {
+		if ($mobile) {
+			$controls.height.value = 200
+		}
+	})
 </script>
 
 <template lang="pug">
@@ -23,10 +31,12 @@
 			'--height'='{$controls.height.value}px'
 		)
 
-	pre.active-keys
-		| $activeKeys:
-		+each('$activeKeys as key')
-			.debug {JSON.stringify(key, null, 2)}
+	
+	+if('!$mobile')
+		pre.active-keys
+			| $activeKeys:
+			+each('$activeKeys as key')
+				.debug {JSON.stringify(key, null, 2)}
 
 </template>
 

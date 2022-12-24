@@ -58,11 +58,13 @@
 		top: unset;
 		bottom: 20%;
 
-		z-index: 2;
+		display: flex;
+
+		z-index: -1;
 
 		width: fit-content;
 		margin: auto;
-		padding: 1rem 2rem;
+		padding: 1rem;
 
 		font-size: var(--font-sm);
 		background: rgba(var(--light-a-rgb), 0.9);
@@ -89,6 +91,9 @@
 	}
 
 	@media only screen and (max-width: 1000px) {
+		pre {
+			bottom: 1rem;
+		}
 		span {
 			font-size: var(--font-xxs);
 		}

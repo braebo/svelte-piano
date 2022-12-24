@@ -12,7 +12,7 @@
 
 <style lang="scss">
 	.install {
-		margin: 0 auto;
+		margin: 1rem auto 2rem auto;
 		width: fit-content;
 		box-shadow: var(--shadow-sm);
 	}
