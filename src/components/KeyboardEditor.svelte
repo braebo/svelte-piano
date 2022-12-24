@@ -2,6 +2,7 @@
 	import { Piano, activeKeys, controls, type KeyboardControls } from '$lib'
 	import Settings from '$components/controls/Settings.svelte'
 	import SpecialKeys from '$components/SpecialKeys.svelte'
+	import { fly } from 'svelte/transition'
 	import { mobile } from 'fractils'
 	import { onMount } from 'svelte'
 
@@ -39,7 +40,7 @@
 		pre.active-keys
 			| $activeKeys:
 			+each('$activeKeys as key')
-				.debug {JSON.stringify(key, null, 2)}
+				.debug(transition:fly='{{x: 10, duration: 100}}') {JSON.stringify(key, null, 2)}
 
 </template>
 
@@ -57,14 +58,13 @@
 		align-items: center;
 		position: fixed;
 		bottom: 0;
-		left: 0;
+		left: 1rem;
 
 		width: 100vw;
-		min-height: 7rem;
+		min-height: 7.75rem;
 		margin: 0;
 
 		color: var(--light-d);
-		background: var(--light-c);
 		border-radius: var(--radius);
 		filter: contrast(1.1);
 
