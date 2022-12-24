@@ -3,6 +3,7 @@
 	import SpecialKeys from '$components/SpecialKeys.svelte'
 	import Install from '$components/Install.svelte'
 	import Code from '$components/Code.svelte'
+	import { wait } from 'fractils'
 </script>
 
 <template lang="pug">
@@ -11,9 +12,11 @@
 
 		Install
 
-		KeyboardEditor
+		+await('wait(250) then _')
+			KeyboardEditor
 
-		Code
+		+await('wait(750) then _')
+			Code
 
 </template>
 
