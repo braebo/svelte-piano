@@ -2,8 +2,9 @@
 	import { Piano, activeKeys, controls, type KeyboardControls } from '$lib'
 	import Settings from '$components/controls/Settings.svelte'
 	import SpecialKeys from '$components/SpecialKeys.svelte'
+	import { OnMount, mobile } from 'fractils'
+	import { quintOut } from 'svelte/easing'
 	import { fly } from 'svelte/transition'
-	import { mobile } from 'fractils'
 	import { onMount } from 'svelte'
 
 	export let options: KeyboardControls | undefined = undefined
@@ -25,13 +26,14 @@
 
 	Settings(on:update='{piano.update}')
 
-	.keyboard
-		Piano(
-			{options}
-			bind:this='{piano}'
-			'--width'='{$controls.width.value}px'
-			'--height'='{$controls.height.value}px'
-		)
+	OnMount
+		.keyboard(in:fly|local='{{ y: 5 , easing: quintOut }}')
+			Piano(
+				{options}
+				bind:this='{piano}'
+				'--width'='{$controls.width.value}px'
+				'--height'='{$controls.height.value}px'
+			)
 	
 	+if('piano?.keyboard')
 		SpecialKeys(keyboard='{piano.keyboard}')
@@ -40,7 +42,9 @@
 		pre.active-keys
 			| $activeKeys:
 			+each('$activeKeys as key')
-				.debug(transition:fly='{{x: 10, duration: 100}}') {JSON.stringify(key, null, 2)}
+				.debug(
+					transition:fly='{{ x: 10, duration: 100, easing: quintOut }}'
+				) {JSON.stringify(key, null, 2)}
 
 </template>
 

@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { controls } from '$lib'
+	import { mobile } from 'fractils'
 </script>
 
 <div class="control">
 	<div class="inputs">
 		<div class="colors">
-			<input type="color" bind:value={$controls.theme.value.a} />
-			<input type="color" bind:value={$controls.theme.value.b} />
+			<input class:mobile={$mobile} type="color" bind:value={$controls.theme.value.a} />
+			<input class:mobile={$mobile} type="color" bind:value={$controls.theme.value.b} />
 		</div>
 	</div>
 </div>
@@ -54,6 +55,11 @@
 			}
 
 			cursor: pointer;
+
+			&.mobile {
+				width: 33%;
+				height: 75%;
+			}
 		}
 	}
 </style>

@@ -75,6 +75,9 @@
 		z-index: 1;
 		user-select: none;
 		pointer-events: none;
+
+		transform: translateY(-1rem);
+		max-width: 95vw;
 	}
 
 	.subsection {

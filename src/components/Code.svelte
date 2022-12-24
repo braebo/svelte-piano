@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { defaultControls } from '$lib/controls'
 	import { draggable } from '@neodrag/svelte'
-	import { controls } from '$lib'
+	import { mobile } from 'fractils'
 	import Copy from './Copy.svelte'
+	import { controls } from '$lib'
 
 	const defaults = JSON.parse(JSON.stringify(defaultControls))
 
@@ -42,7 +43,7 @@
 	}
 </script>
 
-<pre use:draggable><span
+<pre use:draggable class:mobile={$mobile}><span
 		><Copy
 			><span class="operator">{'<script>\n\t'}</span><span style:color="var(--brand-a)">import</span> <span class="curlyboi">&lcub;</span
 			> <span class="element">Piano</span> <span class="curlyboi">&rcub;</span> <span class="operator">from</span> <span class="string"
@@ -75,6 +76,8 @@
 
 		cursor: grab;
 
+		animation: screenOn 0.75s cubic-bezier(0.49, 0.05, 0.09, 1.02) forwards;
+
 		&:active,
 		&:focus {
 			cursor: grabbing;
@@ -88,14 +91,28 @@
 				background: transparent;
 			}
 		}
+
+		&.mobile {
+			right: 1rem;
+			bottom: 1rem;
+			left: unset;
+
+			user-select: none;
+
+			span {
+				font-size: 0.7rem !important;
+			}
+		}
 	}
 
-	@media only screen and (max-width: 1000px) {
-		pre {
-			bottom: 1rem;
+	@keyframes screenOn {
+		0% {
+			opacity: 0;
+			clip-path: inset(50% 0 50% 0);
 		}
-		span {
-			font-size: var(--font-xxs);
+		100% {
+			opacity: 1;
+			clip-path: inset(0);
 		}
 	}
 
