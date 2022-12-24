@@ -60,7 +60,7 @@
 
 		display: flex;
 
-		z-index: -1;
+		z-index: 0;
 
 		width: fit-content;
 		margin: auto;
