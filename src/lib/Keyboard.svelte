@@ -132,42 +132,43 @@
 	const touches = new Map<number, KeyboardEvent['code']>()
 	const handleTouchMove = (e: TouchEvent) => {
 		if (dragging) {
-			const touch = e.touches[0]
+			for (const touch of e.changedTouches) {
+				const element = document.elementFromPoint(touch.clientX, touch.clientY)
+				if (!element) return
+
+				const code = (element as HTMLElement).dataset.code
+				if (!code) return
+
+				if (touches.has(touch.identifier)) {
+					const lastCode = touches.get(touch.identifier)
+					if (lastCode !== code) {
+						keyboard.release(lastCode as KeyboardEvent['code'])
+						touches.set(touch.identifier, code)
+						keyboard.press(code as KeyboardEvent['code'])
+					}
+				} else {
+					touches.set(touch.identifier, code)
+					keyboard.press(code as KeyboardEvent['code'])
+				}
+			}
+		}
+	}
+	const handleTouchEnd = (e: TouchEvent) => {
+		for (const touch of e.changedTouches) {
 			const element = document.elementFromPoint(touch.clientX, touch.clientY)
 			if (!element) return
 
 			const code = (element as HTMLElement).dataset.code
 			if (!code) return
 
-			if (touches.has(touch.identifier)) {
-				const lastCode = touches.get(touch.identifier)
-				if (lastCode !== code) {
-					keyboard.release(lastCode as KeyboardEvent['code'])
-					touches.set(touch.identifier, code)
-					keyboard.press(code as KeyboardEvent['code'])
-				}
-			} else {
-				touches.set(touch.identifier, code)
-				keyboard.press(code as KeyboardEvent['code'])
-			}
+			touches.delete(touch.identifier)
+			keyboard.release(code)
 		}
-	}
-	const handleTouchEnd = (e: TouchEvent) => {
-		const touch = e.changedTouches[0]
-
-		const element = document.elementFromPoint(touch.clientX, touch.clientY)
-		if (!element) return
-
-		const code = (element as HTMLElement).dataset.code
-		if (!code) return
-
-		touches.delete(touch.identifier)
-		keyboard.release(code)
-
 		if (touches.size === 0) {
 			console.log('resetting')
 			dragging = false
 			released = true
+			keyboard.clear()
 		}
 	}
 </script>
