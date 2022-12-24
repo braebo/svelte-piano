@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { KeyboardOptions, State, Note, Keymap, SpecialKeymap, Key } from './types'
+import type { KeyboardOptions, State, Note, Keymap, SpecialKey, SpecialKeymap, Key } from './types'
 
 import { keymapSingle, keymapDouble, specialKeyMap } from './keymap'
 import { atom } from 'nanostores'
@@ -7,9 +7,11 @@ import { Subject } from 'rxjs'
 
 const keyDown = new Subject<Note>()
 const keyUp = new Subject<Note>()
+const specialKey = new Subject<SpecialKey>()
 
 export const onKeyDown = keyDown.asObservable()
 export const onKeyUp = keyUp.asObservable()
+export const onSpecialKey = specialKey.asObservable()
 
 export const activeKeys = atom<Note[]>([])
 
@@ -456,10 +458,14 @@ export class QwertyKeyboard {
 	private specialKey(keyCode: KeyboardEvent['code']) {
 		if (this.specialKeyMap[keyCode].type === 'octave' && this.state.octaveControls) {
 			// Shift the state of the `octave`.
-			this.state.octave += this.specialKeyMap[keyCode].value
+			let targetOctave = this.state.octave + this.specialKeyMap[keyCode].value
+			if (targetOctave > 4) targetOctave = 4
+			if (targetOctave < -4) targetOctave = -4
+			this.state.octave = targetOctave
 		} else if (this.specialKeyMap[keyCode].type === 'velocity' && this.state.velocityControls) {
 			// Set the `velocity` to a new value.
 			this.state.velocity = this.specialKeyMap[keyCode].value
 		}
+		specialKey.next(this.specialKeyMap[keyCode])
 	}
 }

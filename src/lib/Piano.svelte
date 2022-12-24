@@ -10,11 +10,11 @@
 
 	export let options: KeyboardOptions | undefined = undefined
 
-	const keyboard = new QwertyKeyboard(options)
+	export const keyboard = new QwertyKeyboard(options)
 
 	export function update(e: CustomEvent) {
 		if (e.detail.state) {
-			// @ts-expect-error - too tired to investigate this one.
+			// @ts-ignore
 			keyboard.state[e.detail.key as keyof QwertyKeyboard['state']] = e.detail.value
 		} else {
 			keyboard[e.detail.key as keyof QwertyKeyboard] = e.detail.value
@@ -32,7 +32,6 @@
 
 	// TODO: Move this somewhere else and do it properly.
 	const keyCodes = Object.keys(keyboard.keys).map((code) => {
-		// lol
 		return code
 			.replace('Key', '')
 			.replace('Digit', '')
@@ -49,7 +48,6 @@
 			.replace('Equal', '=')
 	})
 
-	// TODO: Touch move should function similarly to mouse move.
 	let dragging = false
 	let released = false
 	let moved = false

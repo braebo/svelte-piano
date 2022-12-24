@@ -1,7 +1,7 @@
 import type { QwertyKeyboard } from './QwertyKeyboard'
 import type { Subscription } from 'rxjs'
 
-import { Sampler, PingPongDelay, Reverb } from 'tone'
+import { Sampler, PingPongDelay, Reverb, Frequency } from 'tone'
 import { dev } from '$app/environment'
 import { log } from 'fractils'
 
@@ -23,20 +23,6 @@ const salamander = {
 		C6: 'C6.mp3',
 		C7: 'C7.mp3',
 		C8: 'C8.mp3',
-		// Ds1: 'Ds1.mp3',
-		// Ds2: 'Ds2.mp3',
-		// Ds3: 'Ds3.mp3',
-		// Ds4: 'Ds4.mp3',
-		// Ds5: 'Ds5.mp3',
-		// Ds6: 'Ds6.mp3',
-		// Ds7: 'Ds7.mp3',
-		// Fs1: 'Fs1.mp3',
-		// Fs2: 'Fs2.mp3',
-		// Fs3: 'Fs3.mp3',
-		// Fs4: 'Fs4.mp3',
-		// Fs5: 'Fs5.mp3',
-		// Fs6: 'Fs6.mp3',
-		// Fs7: 'Fs7.mp3',
 	},
 	baseUrl: 'https://tonejs.github.io/audio/salamander/',
 }
@@ -51,11 +37,6 @@ const electric = {
 		E2: 'E2.mp3',
 		F2: 'F2.mp3',
 		G2: 'G2.mp3',
-		// As1: 'As1.mp3',
-		// Cs2: 'Cs2.mp3',
-		// Ds2: 'Ds2.mp3',
-		// Fs2: 'Fs2.mp3',
-		// Gs1: 'Gs1.mp3',
 	},
 	baseUrl: 'https://tonejs.github.io/audio/casio/',
 }
@@ -98,7 +79,9 @@ export class Instrument {
 
 		if (this.keyboard.onKeyDown)
 			this.keydown = this.keyboard.onKeyDown.subscribe((note) => {
-				this.sampler.triggerAttack([note.name], '+0.01', note.velocity / 127)
+				const transposition = this.keyboard.state.octave * 12
+				const midiNote = Frequency(note.name).transpose(transposition).toFrequency()
+				this.sampler.triggerAttack(midiNote, '+0.01', note.velocity / 127)
 			})
 
 		if (this.keyboard.onKeyUp)

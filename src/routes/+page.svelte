@@ -1,5 +1,6 @@
 <script lang="ts">
 	import KeyboardEditor from '$components/KeyboardEditor.svelte'
+	import SpecialKeys from '$components/SpecialKeys.svelte'
 	import Install from '$components/Install.svelte'
 	import Code from '$components/Code.svelte'
 </script>

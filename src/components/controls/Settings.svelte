@@ -4,7 +4,6 @@
 	import ColorPickers from '$components/controls/ColorPickers.svelte'
 	import Control from '$components/controls/Control.svelte'
 	import { createEventDispatcher } from 'svelte'
-	import Keyboard from '$lib/Keyboard.svelte'
 	import { controls } from '$lib/controls'
 	import Checkbox from './Checkbox.svelte'
 	import Slider from './Slider.svelte'

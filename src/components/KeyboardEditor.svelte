@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { Piano, activeKeys, controls, type KeyboardControls } from '$lib'
 	import Settings from '$components/controls/Settings.svelte'
+	import SpecialKeys from '$components/SpecialKeys.svelte'
 	import { mobile } from 'fractils'
 	import { onMount } from 'svelte'
 
 	export let options: KeyboardControls | undefined = undefined
 
-	let keyboard: Piano
+	let piano: Piano
 
 	if (options) {
 		$controls = Object.assign($controls, options)
@@ -21,17 +22,19 @@
 
 <template lang="pug">
 
-	Settings(on:update='{keyboard.update}')
+	Settings(on:update='{piano.update}')
 
 	.keyboard
 		Piano(
 			{options}
-			bind:this='{keyboard}'
+			bind:this='{piano}'
 			'--width'='{$controls.width.value}px'
 			'--height'='{$controls.height.value}px'
 		)
-
 	
+	+if('piano?.keyboard')
+		SpecialKeys(keyboard='{piano.keyboard}')
+
 	+if('!$mobile')
 		pre.active-keys
 			| $activeKeys:
@@ -42,6 +45,9 @@
 
 <style lang="scss">
 	.keyboard {
+		position: relative;
+		z-index: 1;
+
 		margin: auto;
 		width: fit-content;
 	}
