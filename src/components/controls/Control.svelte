@@ -34,6 +34,7 @@
 		font-size: var(--font-xxs);
 
 		pointer-events: all;
+		user-select: none;
 
 		label {
 			position: relative;

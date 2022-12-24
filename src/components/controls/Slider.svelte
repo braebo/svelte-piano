@@ -11,7 +11,7 @@
  -->
 <script lang="ts">
 	import { tick, createEventDispatcher } from 'svelte'
-	import { mapRange } from 'fractils'
+	import { mapRange, mobile } from 'fractils'
 	import { onDestroy } from 'svelte'
 
 	const dispatch = createEventDispatcher()
@@ -35,59 +35,113 @@
 	const thumbWidth = 8
 	$: clientWidth = el?.clientWidth ?? 100
 	$: progress = mapRange(value, min, max, 1, clientWidth - thumbWidth)
+	$: console.log({ progress })
 
 	// Used to store the last value of the slider before it's truncated.
 	let targetValue = value
 
+	let last = performance.now()
+
+	interface Events {
+		touch: boolean
+		startEvent: 'pointerdown' | 'touchstart'
+		endEvent: 'pointerup' | 'touchend'
+		moveEvent: 'pointermove' | 'touchmove'
+	}
+
+	const getX = (e: MouseEvent | TouchEvent) => {
+		if (e.type.includes('touch')) {
+			return (e as TouchEvent).touches?.[0].clientX
+		} else {
+			return (e as MouseEvent).clientX
+		}
+	}
+
+	let events: Events
+
+	const getEvents = (e: TouchEvent | MouseEvent): Events => {
+		if (e.type.includes('touch')) {
+			events = {
+				touch: true,
+				startEvent: 'touchstart',
+				endEvent: 'touchend',
+				moveEvent: 'touchmove',
+			}
+		}
+
+		events = {
+			touch: false,
+			startEvent: 'pointerdown',
+			endEvent: 'pointerup',
+			moveEvent: 'pointermove',
+		}
+
+		return events
+	}
+
 	/**
 	 * Used to calculate progress when clicking the track (as opposed to dragging the thumb).
 	 */
-	const setFromMouse = (e: MouseEvent) => {
+	const handleInput = (e: MouseEvent | TouchEvent) => {
 		if (!el) return
-		// const mouse = vertical ? e.clientY : e.clientX
-		const mouse = e.clientX
+		const targetValue = getTargetValue(e)
+		updateValue(targetValue)
+
+		const events = getEvents(e)
+
+		// Continue in case this is a drag operation
+		handleMoveStart(events)
+	}
+
+	const getTargetValue = (e: MouseEvent | TouchEvent) => {
+		const x = getX(e)
+
 		const { left } = el.getBoundingClientRect()
-		const relativeX = mouse - left
+		const relativeX = x - left
 
 		const normalizedProgress = mapRange(relativeX, 0, el.clientWidth, 0, 100)
 
 		targetValue = mapRange(normalizedProgress, 0, 100, min, max)
-		updateValue(targetValue)
 
-		// Continue in case this is a drag operation
-		mouseDown()
+		console.log({ normalizedProgress, min, max, targetValue })
+
+		return targetValue
 	}
 
-	const mouseUp = () => {
+	const handleInputEnd = (events: Events) => {
 		dragging = false
 
-		window?.addEventListener('pointermove', mouseMove)
+		const { touch, moveEvent } = events
+		window?.addEventListener(moveEvent, handleInputMove)
 
-		el.style.cursor = 'pointer'
-		track.style.cursor = 'pointer'
-		thumb.style.cursor = 'grab'
+		if (!touch && el && track && thumb) {
+			el.style.cursor = 'pointer'
+			track.style.cursor = 'pointer'
+			thumb.style.cursor = 'grab'
+		}
 	}
 
-	const mouseDown = () => {
+	const handleMoveStart = (events: Events) => {
 		dragging = true
 
-		window?.addEventListener('pointerup', mouseUp, { once: true })
-		window?.addEventListener('pointermove', mouseMove)
+		const { touch, endEvent, moveEvent } = events
 
-		el.style.cursor = 'grabbing'
-		if (el.parentElement) el.parentElement.style.cursor = 'grabbing'
-		track.style.cursor = 'grabbing'
-		thumb.style.cursor = 'grabbing'
+		window?.addEventListener(endEvent, () => handleInputEnd(events), { once: true })
+		window?.addEventListener(moveEvent, handleInputMove)
+
+		if (touch) {
+			el.style.cursor = 'grabbing'
+			if (el.parentElement) el.parentElement.style.cursor = 'grabbing'
+			track.style.cursor = 'grabbing'
+			thumb.style.cursor = 'grabbing'
+		}
 	}
 
-	const { performance } = globalThis
-	let last = performance.now()
-	const mouseMove = async (e: MouseEvent) => {
+	const handleInputMove = async (e: MouseEvent | TouchEvent) => {
 		if (!dragging || !el) return
 		await tick()
-		e.preventDefault()
 
-		targetValue += e.movementX * ((1 / clientWidth) * (max - min))
+		targetValue = getTargetValue(e)
 
 		if (targetValue < min) targetValue = min
 		if (targetValue > max) targetValue = max
@@ -115,8 +169,8 @@
 
 	onDestroy(() => {
 		if (typeof window === 'undefined') return
-		window?.removeEventListener('pointermove', mouseMove)
-		window?.removeEventListener('pointerup', mouseUp)
+		window?.removeEventListener('pointermove', handleInputMove)
+		window?.removeEventListener('pointerup', () => handleInputEnd({} as Events))
 	})
 </script>
 
@@ -128,10 +182,20 @@
 		draggable="false"
 		class="range {name}"
 		aria-valuenow={value}
-		on:pointerdown={setFromMouse}
+		on:mousedown={(e) => {
+			if ($mobile) return
+			handleInput(e)
+		}}
+		on:touchstart|preventDefault={(e) => {
+			if (!$mobile) return
+			handleInput(e)
+		}}
 		style:--thumb-width="{thumbWidth}px"
 	>
-		<div class="thumb" bind:this={thumb} on:pointerdown|stopPropagation|capture={mouseDown} style:left="{progress}px" draggable="false" />
+		<!-- on:touchstart={setFromTouch} -->
+		<div class="thumb" bind:this={thumb} style:left="{progress}px" draggable="false" />
+		<!-- on:mousedown={handleInput}
+			on:touchstart={handleInput} -->
 		<div class="track" bind:this={track} style:clip-path="0 {progress} 0 0" draggable="false" />
 	</div>
 {/if}
@@ -145,7 +209,7 @@
 
 		background: none;
 
-		user-select: none;
+		pointer-events: all;
 
 		&:focus {
 			outline: none;

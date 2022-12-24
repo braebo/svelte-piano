@@ -233,6 +233,8 @@
 		width: var(--width);
 		max-width: 95vw;
 		height: var(--height);
+
+		user-select: none;
 	}
 
 	.keys {
@@ -265,6 +267,8 @@
 
 			background: var(--theme-b, $dark);
 			color: mix($light, $dark, 75%);
+			box-shadow: 0 -0.2rem 0.1rem 0.05rem rgba(lighten($dark, 20%), 0.5) inset,
+				0 -0.3rem 0.1rem 0.2rem rgba(lighten($dark, 10%), 0.5) inset, 0 -0.2rem 0 0.2rem rgba(lighten($dark, 30%), 0.5) inset;
 
 			font-size: var(--font-xxs);
 
@@ -304,5 +308,7 @@
 		border-color: var(--brand-a);
 		background: var(--brand-a);
 		color: $dark;
+		box-shadow: 0 -0.2rem 0.3rem 0.05rem rgba(lighten($dark, 20%), 0.1) inset, 0 -0.3rem 0.4rem 0.2rem rgba(lighten($dark, 10%), 0.1) inset,
+			0 -0.15rem 0 0.2rem rgba(lighten($dark, 20%), 0.1) inset;
 	}
 </style>
