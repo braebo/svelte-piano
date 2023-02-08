@@ -7,11 +7,14 @@ on:
 
 jobs:
   # test:
+  #   if: github.repository == 'fractalhq/svelte-piano'
+  #   name: Test
+  #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Setup PNPM
   #       uses: pnpm/action-setup@v2.0.1
   #       with:
-  #           version: 7.0.0
+  #         version: 7.0.0
 
   #     - name: Install Dependencies
   #       run: pnpm install
@@ -20,7 +23,7 @@ jobs:
   #       run: pnpm check
   release:
     # needs: test
-    if: github.repository == 'fractalhq/fracpack'
+    if: github.repository == 'fractalhq/svelte-piano'
     name: Release
     runs-on: ubuntu-latest
     steps:
