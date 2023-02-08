@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Fractils, ThemeToggle } from 'fractils'
+	import Github from '$components/Github.svelte'
 	import Nav from '$components/Nav.svelte'
 	import 'greset/greset.css'
 	import '../styles/app.scss'
@@ -13,9 +14,12 @@
 		.top
 			h1 Svelte Piano
 		
-			.theme-toggle
+			.corner
+				a(href="https://github.com/fractalhq/svelte-piano").github
+					Github
 				
-				ThemeToggle
+				.theme-toggle
+					ThemeToggle
 
 		Nav
 
@@ -46,6 +50,25 @@
 				font-variation-settings: 'wght' 400;
 				color: var(--dark-d);
 			}
+		}
+	}
+
+	.corner {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+	}
+
+	.github {
+		width: 1.5rem;
+		height: 1.5rem;
+		color: var(--dark-a);
+		opacity: 0.5;
+		transition: 0.1s;
+		cursor: pointer;
+
+		&:hover {
+			opacity: 1;
 		}
 	}
 
