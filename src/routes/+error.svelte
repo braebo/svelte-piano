@@ -1,13 +1,12 @@
 <script lang="ts">
-	import { dev } from '$app/environment'
 	import Error from '$components/Error.svelte'
+	import { dev } from '$app/environment'
 	import { page } from '$app/stores'
 
 	if (dev) console.log($page.error)
 </script>
 
 <template lang="pug">
-
 
 	+if('dev && $page.status === "404"')
 		.four-o-four

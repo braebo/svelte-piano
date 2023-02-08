@@ -16,15 +16,49 @@ From the original project:
 pnpm install -D svelte-piano
 ```
 
-```html
-<script>
-	import { SveltePiano } from 'svelte-piano';
-</script>
-
-<SveltePiano />
-```
 
 # Usage
+
+```html
+<script>
+	import { Piano } from 'svelte-piano';
+</script>
+
+<Piano />
+```
+
+<br>
+
+## Options
+
+
+|             |                                                             |
+|-------------|-------------------------------------------------------------|
+| `polyphony` | The number of keys that can be active simultaneously.       |
+| `notes`     | Whether or not to display the note names.  Default `false`. |
+| `sound`     | Whether to load and play the stock keyboard sound.          |
+| `width`     | Piano width in pixels.                                      |
+| `height`    | Piano height in pixels.                                     |
+| `theme`     | `todo`                                                      |
+
+```jsx
+<Piano
+	options={
+		polyphony: 1,
+		notes: false,
+		keys: true,
+		sound: true
+	}
+	'--width': 900px;
+	'--height': 250px;
+ />
+```
+
+<br>
+
+## Note events
+
+You can subscribe to note events using the `onKeyDown`, `onKeyUp`, and `activeKeys` stores.
 
 ```html
 <script>
@@ -41,68 +75,72 @@ pnpm install -D svelte-piano
 	}
 </script>
 
-<SveltePiano />
+<Piano />
 ```
 
-### The note object has cool stuff in it.
+### The `Note` interface:
 
-The object you get back in a `onKeyDown` or `onKeyUp` observable includes:
+```typescript
+interface Note {
+	/**
+	 * The keyCode of the key being pressed down.
+	 */
+	keyCode: number
 
-```javascript
-{
-  // the midi number of the note
-  note: 60,
-  // the keyCode of the key being pressed down
-  keyCode: 65,
-  // the frequency of the note
-  frequency: 261.6255653005986,
-  // on note down: the current velocity (this can only be set when rows = 1)
-  // on note up: 0
-  velocity: 127
+	/**
+	 * The midi number of the note.
+	 */
+	note: number
+
+	/**
+	 * The frequency of the note between 0 and 20,000.
+	 */
+	frequency: number
+
+	/**
+	 * On note down, the current velocity.
+	 * On note up, 0.
+	 */
+	velocity: number
+
+	/**
+	 * Whether the key is currently being pressed down.
+	 */
+	isActive: boolean
 }
 ```
 
 These properties will be useful in setting up instruments. See the [`lib/Instrument.ts`](https://github.com/fractalhq/svelte-piano/blob/main/src/lib/Instrument.ts) file for a simple example.
 
-### API
+<br>
 
-There are several options that can be set to configure your keyboard object. They can be passed into the `QwertyKeyboard` constructor in an object or set individually using `set`.
+## Headless API
 
-```javascript
-// properties can be passed into the QwertyKeyboard object
+If you're not using Svelte, you can use the keyboard directly. Options can be passed into the `QwertyKeyboard` constructor in an object or set individually using `set`.
+
+```ts
+// Headless vanilla keyboard.
 const keyboard = new QwertyKeyboard({
   polyphony: 1,
   rows: 2,
   priority: 'lowest'
 });
 
-// all properties can also be set later
+// Properties can also be set later.
 keyboard.priority = 'highest'
 ```
 
-### `polyphony`
-The number of keys that can be active simultaneously.
+| Property           | Description                                                                                                                                                                                            |
+|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `polyphony`        | The number of keys that can be active simultaneously.                                                                                                                                                  |
+| `rows`             | Either `1` or `2`.                                                                                                                                                                                     |
+| `octaveControls`   | Determines whether or not the `z` and `x` keys shift octaves when `rows` is set to `1`.                                                                                                                |
+| `velocityControls` | Determines whether or not the number keys set the velocity of the notes being triggered.                                                                                                               |
+| `priority`         | Determines the priority of the note triggers.                                                                                                                                                          |
+|                    | `"last"`: prefer the last note(s) pressed. <br> `"first"`: prefer the first note(s) pressed. <br> `"highest"`: prefer the highest note(s) pressed. <br> `"lowest"`: prefer the lowest note(s) pressed. |
+| `rootNote`         | Determines what note the lowest key on the keyboard will represent. The default is `60` (C4).                                                                                                          |
 
-### `rows`
-Either `1` or `2`, see the diagrams above.
-
-### `octaveControls`
-Determines whether or not the `z` and `x` keys shift octaves when `rows` is set to `1`.
-
-### `velocityControls`
-Determines whether or not the number keys set the velocity of the notes being triggered. Keep in mind that velocity is just a number— you have to interpret it in your sounds!
-
-### `priority`
-Determines the priority of the note triggers. Priority only takes effect when the number of keys being pressed down exceeds the polyphony (e.g. when the polyphony is 1 but a second key is pressed).
-
-- `"last"`: prefer the last note(s) pressed
-- `"first"`: prefer the first note(s) pressed
-- `"highest"`: prefer the highest note(s) pressed
-- `"lowest"`: prefer the lowest note(s) pressed
+The default `rootNote` is `60` (C4). Keep in mind that setting it to a note other than C (36, 48, 60, 72, 84, etc.) will result in the key mappings not lining up like a regular keyboard!
 
 For more on note priority, check out [this Sound on Sound article](https://web.archive.org/web/20150913012148/http://www.soundonsound.com/sos/oct00/articles/synthsec.htm).
 
-### `rootNote`
-Determines what note the lowest key on the keyboard will represent. The default is `60` (C4). Keep in mind that setting it to a note other than C (36, 48, 60, 72, 84, etc.) will result in the key mappings not lining up like a regular keyboard!
-
-------------------------------------
