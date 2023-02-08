@@ -7,36 +7,39 @@
 
 	const defaults = JSON.parse(JSON.stringify(defaultControls))
 
-	$: options = Object.entries($controls)
-		.filter(([key]) => {
-			if (['theme', 'width', 'height'].includes(key)) return false
+	$: options = Object.entries($controls).filter(([key]) => {
+		if (['theme', 'width', 'height'].includes(key)) return false
 
-			const isDefaultValue = $controls[key].value !== defaults[key].value
+		const isDefaultValue = $controls[key].value !== defaults[key].value
 
-			return isDefaultValue
-		})
+		return isDefaultValue
+	})
+
+	$: optionProps = options
 		.map(
 			([k, v]) => `\n\t&nbsp;&nbsp;<span class="options">${k}</span><span class="curlyboi">:</span><span class="value"> ${v.value}</span>`,
 		)
+		.join(',')
+
+	$: styles = ['width', 'height'].filter((prop) => {
+		return $controls[prop].value !== defaults[prop].value
+	})
+
+	$: styleProps = styles
+		.map((prop) => {
+			return `\n\t<span class="styleprop">--${prop}</span><span class="operator">=</span><span class="string">"${$controls[prop].value}px"</span>`
+		})
 		.join('')
 
-	$: styleProps = ['width', 'height']
-		.filter((prop) => {
-			return $controls[prop].value !== defaults[prop].value
-		})
-		.map((prop) => {
-			return `\n\t<span class="styleprop">--width</span><span class="operator">=</span><span class="string">"${$controls[prop].value}px"</span>`
-		})
-
-	$: propLength = options.length + styleProps.length
+	$: propLength = optionProps.length + styleProps.length
 
 	let code = ''
 
 	$: if ($controls) {
 		code = `<span class="element">&lt;Piano</span>${
-			options.length
-				? `\n\t<span class="options">options</span><span class="curlyboi">=\{</span>${options}${
-						options.length ? '\n\t' : ''
+			optionProps.length
+				? `\n\t<span class="options">options</span><span class="curlyboi">=\{</span>${optionProps}${
+						optionProps.length ? '\n\t' : ''
 				  }<span class="curlyboi">\}</span>`
 				: ''
 		}${styleProps}${propLength > 0 ? '\n' : ' '}<span class="element">\/\></span>`
@@ -44,7 +47,7 @@
 </script>
 
 <pre use:draggable class:mobile={$mobile}><span
-		><Copy
+		><Copy {options} {styles}
 			><span class="operator">{'<script>\n\t'}</span><span style:color="var(--brand-a)">import</span> <span class="curlyboi">&lcub;</span
 			> <span class="element">Piano</span> <span class="curlyboi">&rcub;</span> <span class="operator">from</span> <span class="string"
 				>'svelte-piano'</span

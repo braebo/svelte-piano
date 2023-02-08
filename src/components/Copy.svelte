@@ -1,18 +1,40 @@
 <script lang="ts">
+	import { controls, type KeyboardControls } from '$lib'
+	import { onDestroy, onMount } from 'svelte'
 	import { quintOut } from 'svelte/easing'
 	import { fly } from 'svelte/transition'
 	import { Copy } from 'lucide-svelte'
 	import { copy } from 'svelte-copy'
-	import { onMount } from 'svelte'
 
-	export let text: string = ''
-	let copyText = text
+	export let options = [] as unknown[]
+	export let styles = [] as unknown[]
 
 	let slotEl: HTMLElement
 
+	// @ts-ignore
+	$: optionProps = options.map(([k, v]) => `\n\t\t${k}: ${v.value}`).join(',') ?? ''
+
+	$: optionsText = optionProps.length ? `\n\toptions={${optionProps}\n\t}` : ''
+
+	// @ts-ignore
+	$: styleProps = styles.map((prop) => `\n\t--${prop}='${$controls[prop].value}px'`).join('')
+
+	$: closingTag = optionProps.concat(styleProps).length > 0 ? '\n/>' : '/>'
+
+	const copyText = async () => {
+		const text = `<script>
+	import { Piano } from 'svelte-piano'
+${'<'}/script>
+
+<Piano${optionsText}${styleProps}${closingTag}`
+		console.log(text)
+		await navigator.clipboard.writeText(text)
+		animate()
+	}
+
 	let copied = false
 	let timeout: NodeJS.Timeout
-	const handleCopy = () => {
+	const animate = () => {
 		copied = true
 		clearTimeout(timeout)
 		timeout = setTimeout(() => {
@@ -20,20 +42,13 @@
 		}, 2000)
 	}
 
-	onMount(() => {
-		if (!copyText) {
-			const innerText = slotEl!?.innerText
-			if (innerText) {
-				copyText = innerText
-			}
-		}
-	})
+	onDestroy(() => clearTimeout(timeout))
 </script>
 
 <template lang="pug">
 
 	.copy(
-		use:copy='{copyText}' 'on:svelte-copy'!='{() => handleCopy()}'
+		on:pointerdown='{copyText}'
 		class:copied
 	)
 		.copy-text(bind:this='{slotEl}')
