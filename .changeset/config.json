@@ -3,7 +3,7 @@
 	"changelog": [
 		"@svitejs/changesets-changelog-github-compact",
 		{
-			"repo": "fractalhq/fracpack"
+			"repo": "fractalhq/svelte-piano"
 		}
 	],
 	"commit": false,

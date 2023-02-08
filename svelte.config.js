@@ -22,8 +22,6 @@ const config = {
 	},
 
 	package: {
-		// source: 'src/package', // Library directory
-		// dir: 'dist', // Output directory
 		exports: (file) => file === 'index.ts', // Only export index.ts
 	},
 

@@ -4,6 +4,7 @@
 		"baseUrl": ".",
 		"strict": true,
 		"sourceMap": true,
+		"lib": ["esnext", "DOM", "DOM.Iterable"],
 		"target": "esnext",
 		"module": "esnext",
 		"moduleResolution": "node",
@@ -16,7 +17,14 @@
 		"resolveJsonModule": true,
 		"noEmit": true,
 		"types": ["node"],
-		"isolatedModules": true
+		"isolatedModules": true,
+		"rootDirs": [".", "./.svelte-kit/types"],
+		"paths": {
+			"$components": ["./src/components"],
+			"$components/*": ["./src/components/*"],
+			"$lib": ["./src/lib"],
+			"$lib/*": ["./src/lib/*"]
+		}
 	},
 	"include": [
 		"./src/**/**/**/*.ts",
@@ -32,5 +40,5 @@
 		"./.svelte-kit/ambient.d.ts",
 		"./.svelte-kit/types/**/$types.d.ts"
 	],
-	"exclude": ["./.svelte-kit/[!ambient.d.ts]**", "./mdsvex.config.js", "./node_modules/*", "./.vercel/*", "./build/*", "./dist/*"]
+	"exclude": ["**/.sveltekit/[!ambient.d.ts]**", "**/node_modules/*", "mdsvex.config.js", "**/.vercel/*", "**/package/*", "**/build/*"]
 }
