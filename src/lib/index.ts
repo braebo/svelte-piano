@@ -1,9 +1,9 @@
-export { QwertyKeyboard, activeKeys, onKeyDown, onKeyUp } from './QwertyKeyboard'
+export { QwertyKeyboard, activeKeys, onKeyDown, onKeyUp, onSpecialKey } from './QwertyKeyboard.js'
 
 // Svelte component
 export { default as Piano } from './Piano.svelte'
 
 // Controls store
-export { controls } from './controls'
+export { controls, defaultControls } from './controls.js'
 
-export * from './types'
+export * from './types/index.js'
