@@ -40,7 +40,7 @@ a {
 	text-decoration: underline;
 	text-decoration-color: var(--light-d);
 	font-weight: 500;
-	transition: .2s;
+	transition: 0.2s;
 
 	&:hover {
 		text-decoration: underline;
@@ -78,4 +78,16 @@ section {
 
 	max-width: var(--page-width);
 	margin: 0 auto;
+}
+
+blockquote p {
+	padding: 1rem;
+
+	color: var(--dark-b);
+	background: var(--light-c);
+	border-radius: var(--radius-md);
+	box-shadow: var(--shadow-sm);
+
+	font-size: var(--font-sm);
+	font-weight: 300;
 }

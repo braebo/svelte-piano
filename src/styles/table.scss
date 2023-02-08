@@ -1,0 +1,27 @@
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	width: 100%;
+	display: table;
+
+	padding: 1rem;
+	border-color: var(--light-d);
+}
+
+td,
+th {
+	text-align: left;
+	padding: 0.5rem;
+}
+
+th {
+	display: none;
+}
+
+tr {
+	display: table-row;
+
+	&:nth-child(even) {
+		background-color: rgba(var(--light-a-rgb), 0.25);
+	}
+}

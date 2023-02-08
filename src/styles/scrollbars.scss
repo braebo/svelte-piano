@@ -1,0 +1,28 @@
+body {
+	max-height: 100vh;
+	&::-webkit-scrollbar {
+		width: 0.5rem;
+		background: var(--light-c);
+		color: var(--dark-d);
+	}
+	&::-webkit-scrollbar-thumb {
+		background: rgba(var(--dark-d-rgb), 0.33);
+		border-radius: 1rem;
+	}
+
+	scrollbar-gutter: stable;
+}
+
+pre {
+	&::-webkit-scrollbar {
+		height: 0.5rem;
+		background: var(--light-b);
+		color: var(--dark-d);
+	}
+	&::-webkit-scrollbar-thumb {
+		background: rgba(var(--dark-d-rgb), 0.33);
+		border-radius: 1rem;
+	}
+
+	overflow-x: auto;
+}
