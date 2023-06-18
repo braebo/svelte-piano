@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Piano, activeKeys, controls, type KeyboardControls } from '$lib'
-	import Settings from '$components/controls/Settings.svelte'
+	import Settings from '$lib/components/controls/Settings.svelte'
 	import SpecialKeys from '$components/SpecialKeys.svelte'
 	import { OnMount, mobile } from 'fractils'
 	import { quintOut } from 'svelte/easing'

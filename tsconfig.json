@@ -1,54 +1,9 @@
 {
 	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
-		"baseUrl": ".",
 		"strict": true,
-		"sourceMap": true,
-		"types": ["node"],
-		"lib": ["esnext", "DOM", "DOM.Iterable"],
-		"target": "esnext",
-		"module": "esnext",
-		"moduleResolution": "node",
-		"allowJs": false,
-		"checkJs": false,
 		"skipLibCheck": true,
-		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"allowSyntheticDefaultImports": true,
-		"resolveJsonModule": true,
-		"noEmit": true,
-		"declaration": true,
-		"declarationMap": true,
-		"isolatedModules": true
-		// "rootDirs": [".", "./.svelte-kit/types"],
-		// "paths": {
-		// 	"$components": ["./src/components"],
-		// 	"$components/*": ["./src/components/*"],
-		// 	"$lib": ["./src/lib"],
-		// 	"$lib/*": ["./src/lib/*"]
-		// }
 	}
-	// "include": [
-	// 	"./src/**/**/**/*.ts",
-	// 	"./src/**/*.svelte",
-	// 	"./src/**/*.d.ts",
-	// 	"./src/**/*.js",
-	// 	"./src/**/*.ts",
-	// 	"./src/*.d.ts",
-	// 	"./tests/**/*.js",
-	// 	"./tests/**/*.ts",
-	// 	"./vite.config.js",
-	// 	"./tests/**/*.svelte",
-	// 	"./.svelte-kit/ambient.d.ts",
-	// 	"./.svelte-kit/types/**/$types.d.ts"
-	// ],
-	// "exclude": [
-	// 	"**/.sveltekit/[!ambient.d.ts]**",
-	// 	"**/node_modules/*",
-	// 	"mdsvex.config.js",
-	// 	"**/.vercel/*",
-	// 	"**/build/*",
-	// 	"**/dist/*",
-	// 	"**/*.d.ts"
-	// ]
 }
