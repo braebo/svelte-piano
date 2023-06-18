@@ -2,8 +2,8 @@ import type { QwertyKeyboard } from './QwertyKeyboard'
 import type { Subscription } from 'rxjs'
 
 import { Sampler, PingPongDelay, Reverb, Frequency } from 'tone'
-import { dev } from '$app/environment'
 import { log } from 'fractils'
+import { DEV } from 'esm-env'
 
 const salamander = {
 	urls: {
@@ -75,7 +75,7 @@ export class Instrument {
 
 	constructor(public keyboard: QwertyKeyboard) {
 		Instrument.count++
-		if (dev) log(`Instrument #${Instrument.count} Created`, 'lightgreen')
+		if (DEV) log(`Instrument #${Instrument.count} Created`, 'lightgreen')
 
 		if (this.keyboard.onKeyDown)
 			this.keydown = this.keyboard.onKeyDown.subscribe((note) => {
@@ -91,7 +91,7 @@ export class Instrument {
 	}
 
 	dispose() {
-		if (dev) log(`Instrument #${Instrument.count} Disposed`, 'orange')
+		if (DEV) log(`Instrument #${Instrument.count} Disposed`, 'orange')
 		this.sampler.dispose()
 		this.pingpong.dispose()
 		this.reverb.dispose()
