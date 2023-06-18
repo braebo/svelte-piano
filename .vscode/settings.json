@@ -28,7 +28,7 @@
 	"workbench.editor.labelFormat": "default",
 
 	//* File nesting.
-	"explorer.fileNesting.enabled": true,
+	"explorer.fileNesting.enabled": false,
 	"explorer.fileNesting.expand": false,
 	"explorer.fileNesting.patterns": {
 		".gitignore": ".gitattributes, .gitmodules, .gitmessage, .mailmap, .git-blame*",

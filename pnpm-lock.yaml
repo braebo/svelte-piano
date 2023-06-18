@@ -6,7 +6,7 @@ settings:
 
 dependencies:
   fractils:
-    specifier: link:../fractils
+    specifier: ^3.1.2
     version: 3.1.2
   nanostores:
     specifier: ^0.9.2
