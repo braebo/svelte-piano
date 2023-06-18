@@ -1,4 +1,5 @@
 import type { KeyboardControls } from './types'
+
 import { writable } from 'svelte/store'
 
 export const defaultControls: KeyboardControls = {

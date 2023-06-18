@@ -1,17 +1,48 @@
+<!-- 
+	@component
+	A Piano component that can be used to play notes with the keyboard or mouse.
+ -->
+
 <script lang="ts">
 	import type { KeyboardOptions } from './types'
 
-	import Control from '$components/controls/Control.svelte'
+	import { QwertyKeyboard, activeKeys } from './QwertyKeyboard'
 	import { controls, defaultControls } from './controls'
-	import { QwertyKeyboard, activeKeys } from '$lib'
+	import Control from './components/Control.svelte'
 	import { onDestroy, onMount } from 'svelte'
 	import { Instrument } from './Instrument'
 	import { atom } from 'nanostores'
 
+	// interface $$Props {
+	// 	/**
+	// 	 * The intial {@link KeyboardOptions}.
+	// 	 * @default undefined
+	// 	 */
+	// 	options?: KeyboardOptions
+	// 	/**
+	// 	 * The {@link QwertyKeyboard} to use.  If none is provided, a new one will be created.
+	// 	 */
+	// 	keyboard?: QwertyKeyboard
+	// 	/**
+	// 	 * A callback function that will be called whenever the keyboard state changes.
+	// 	 */
+	// 	update?: (e: CustomEvent) => unknown
+	// }
+
+	/**
+	 * The intial {@link KeyboardOptions}.
+	 * @default undefined
+	 */
 	export let options: KeyboardOptions | undefined = undefined
 
+	/**
+	 * The {@link QwertyKeyboard} to use.  If none is provided, a new one will be created.
+	 */
 	export const keyboard = new QwertyKeyboard(options)
 
+	/**
+	 * A callback function that will be called whenever the keyboard state changes.
+	 */
 	export function update(e: CustomEvent) {
 		if (e.detail.state) {
 			// @ts-ignore
@@ -25,7 +56,7 @@
 	let mounted = false
 	onMount(() => {
 		mounted = true
-		if (typeof instrument === 'undefined') instrument = new Instrument(keyboard)
+		instrument ??= new Instrument(keyboard)
 	})
 
 	onDestroy(() => instrument?.dispose())

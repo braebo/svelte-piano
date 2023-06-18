@@ -18,11 +18,11 @@ export const activeKeys = atom<Note[]>([])
 export class QwertyKeyboard {
 	state: State
 
-	/**
-	 *
-	 */
-	_rows: 1 | 2 = 1
+	private _rows: 1 | 2 = 1
 
+	/**
+	 * How many octaves to display.
+	 */
 	get rows() {
 		return this._rows
 	}
